@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NavItemStyle" parent="Widget.MaterialComponents.NavigationView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="itemHorizontalPadding">16dp</item>
+        <item name="itemIconPadding">16dp</item>
+        <item name="itemIconTint">@color/blanco</item>
+        <item name="itemTextColor">@color/blanco</item>
+        <item name="android:background">@color/colorPrincipal</item>
+        <item name="itemBackground">@drawable/nav_item_background</item>
+
+        <item name="itemTextAppearance">@style/NavItemTextAppearance</item>
+    </style>
+
+    <style name="NavItemTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">@font/nunito_black</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+</resources>

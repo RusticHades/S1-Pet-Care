@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".Registro">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Header Image -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/margen_superior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Titulo -->
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/subrayado"
+            android:gravity="center"
+            android:text="Registro"
+            android:textColor="@color/blanco"
+            android:textSize="32sp"
+            android:fontFamily="@font/nunito_black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerImage" />
+
+        <!-- CardView circular para la foto de perfil -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorFondoVerde"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView3">
+
+            <ImageView
+                android:id="@+id/imageViewFotoPerfil"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:contentDescription="Foto de perfil del usuario"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_foto_perfil" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Contenedor del formulario -->
+        <LinearLayout
+            android:id="@+id/formContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <!-- Usuario input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Nombre de Usuario"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_usuario"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextNombreUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Correo Electrónico"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_email"
+                app:boxStrokeColor="@color/colorPrincipal"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextCorreoElectronico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Contra input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Contraseña"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_candado"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextCrearContrasenia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/nunito_bold"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Button de registro -->
+            <Button
+                android:id="@+id/buttonGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/colorFondo"
+                android:text="Guardar"
+                android:textColor="@color/negro"
+                android:textSize="18sp"
+                app:cornerRadius="15dp"
+                android:fontFamily="@font/nunito_semi_bold"/>
+
+            <!-- Link a inicio de sesion -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="¿Ya tienes una cuenta?"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/nunito_regular"/>
+
+                <TextView
+                    android:id="@+id/buttonInicioSesion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Inicia sesión aquí"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorSpam"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/nunito_black_italic"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

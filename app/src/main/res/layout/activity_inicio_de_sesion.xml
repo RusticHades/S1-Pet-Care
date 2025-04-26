@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".InicioDeSesion">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Header Image -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/margen_superior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/imageViewFotoPerfil"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Icono de la app PetCare"
+            android:src="@drawable/logo_veterinaria"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerImage" />
+
+        <!-- App Nombre -->
+        <LinearLayout
+            android:id="@+id/appNameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewFotoPerfil">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pet"
+                android:textColor="@color/colorSpam"
+                android:textSize="48sp"
+                android:fontFamily="@font/nunito_black" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Care"
+                android:textColor="@color/negro"
+                android:textSize="48sp"
+                android:fontFamily="@font/nunito_black"/>
+        </LinearLayout>
+
+        <!-- Slogan -->
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Servicios Médicos Veterinarios"
+            android:textColor="@color/negro"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appNameLayout"
+            android:fontFamily="@font/nunito_black"/>
+
+        <!-- Contenedor -->
+        <LinearLayout
+            android:id="@+id/formContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView3">
+
+            <!-- Usuario Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Usuario"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_usuario"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/negro"
+                    android:inputType="textPersonName"
+                    android:fontFamily="@font/nunito_bold"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Contra Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:hint="Contraseña"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_candado"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextContrasenia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Contenedor de botones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/buttonRegistrar"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorFondo"
+                    android:text="Registrar"
+                    android:textColor="@color/negro"
+                    android:textSize="16sp"
+                    app:cornerRadius="15dp"
+                    android:fontFamily="@font/nunito_semi_bold"/>
+
+                <Button
+                    android:id="@+id/buttonIniciar"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorFondo"
+                    android:text="Iniciar"
+                    android:textColor="@color/negro"
+                    android:textSize="16sp"
+                    app:cornerRadius="15dp"
+                    android:fontFamily="@font/nunito_semi_bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Footer Image -->
+        <ImageView
+            android:id="@+id/footerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:scaleX="-1"
+            android:scaleY="-1"
+            android:src="@drawable/margen_superior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
