@@ -1,18 +1,21 @@
 package com.example.petcare;
 
 import android.content.Intent;
-import android.media.Image;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Menu;
+import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -22,12 +25,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     protected DrawerLayout drawerLayout;
     protected NavigationView navigationView;
     private ImageButton btnMenuHamburguesa;
+    private View headerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
 
         Toolbar toolbar = findViewById(R.id.toolbarMenu);
         setSupportActionBar(toolbar);
@@ -37,11 +40,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
+        // Inicializar vistas
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        actualizarHeaderNavigationView(); //Metodo para colocar el nombre y foto de perfil del usuario xd
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Configuración del ImageButton
+        headerView = navigationView.getHeaderView(0);
+        LinearLayout headerLayout = headerView.findViewById(R.id.headerLayout);
+
+        headerLayout.setOnClickListener(v -> {
+            abrirActivityInformacionDeUsuario(); //Metodo para abrir la activity de informacion del usuario usando el nav header
+        });
+
+
+        // Configuracion del ImageButton para abrir el menu
         btnMenuHamburguesa = findViewById(R.id.buttonMenuHamburguesa);
         btnMenuHamburguesa.setOnClickListener(v -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -59,8 +72,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         int id = item.getItemId();
 
         if (id == R.id.navMenuInicio) {
-            startActivity(new Intent(this, Inicio.class));
-            finish();
+            //If para asegurarse que no se abren multiples activitys iguales
+            if (!(this instanceof Inicio)) {
+                startActivity(new Intent(this, Inicio.class));
+                finish();
+            }
         } else if (id == R.id.navMenuHistorial) {
 
         } else if (id == R.id.navMenuAgendar) {
@@ -71,12 +87,53 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         return true;
     }
 
+    //Metodo para abrir la activyti de informacion del usuario
+    protected void abrirActivityInformacionDeUsuario() {
+        startActivity(new Intent(this, InformacionDeUsuario.class));
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+    public void actualizarHeaderNavigationView() {
+        if (navigationView != null) {
+            View headerView = navigationView.getHeaderView(0);
+            TextView textViewUserName = headerView.findViewById(R.id.textViewUserName);
+            ImageView imageViewProfile = headerView.findViewById(R.id.imageViewProfile);
+
+            SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+
+            // Obtener datos del usuario
+            String nombre = prefs.getString("usuario_nombre", "Nombre de Usuario");
+            String fotoBase64 = prefs.getString("usuario_foto", null);
+
+            // Actualizar nombre
+            textViewUserName.setText(nombre);
+
+            // Actualizar foto de perfil
+            if (fotoBase64 != null && !fotoBase64.isEmpty()) {
+                try {
+                    byte[] decodedBytes = Base64.decode(fotoBase64, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+                    imageViewProfile.setBackground(null);
+                    imageViewProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    imageViewProfile.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);
+                    imageViewProfile.setBackground(null);
+                }
+            } else {
+                imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);
+                imageViewProfile.setBackground(null);
+            }
         }
     }
 }

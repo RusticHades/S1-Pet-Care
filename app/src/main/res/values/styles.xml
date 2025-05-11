@@ -10,7 +10,6 @@
         <item name="itemTextColor">@color/blanco</item>
         <item name="android:background">@color/colorPrincipal</item>
         <item name="itemBackground">@drawable/nav_item_background</item>
-
         <item name="itemTextAppearance">@style/NavItemTextAppearance</item>
     </style>
 
@@ -18,5 +17,10 @@
         <item name="android:fontFamily">@font/nunito_black</item>
         <item name="android:textColor">@color/blanco</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="NavHeaderStyle">
+        <item name="android:background">@color/colorPrincipal</item>
+        <item name="android:textColor">@color/blanco</item>
     </style>
 </resources>

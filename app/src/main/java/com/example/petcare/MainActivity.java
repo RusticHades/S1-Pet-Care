@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity {
 
         EdgeToEdge.enable(this);
 
-        startActivity(new Intent(MainActivity.this, Inicio.class));
+        startActivity(new Intent(MainActivity.this, Registro.class));
         finish();
     }
 }

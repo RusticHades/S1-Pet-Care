@@ -70,13 +70,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_black"
             android:text="Servicios Médicos Veterinarios"
+            android:textAlignment="center"
             android:textColor="@color/negro"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appNameLayout"
-            android:fontFamily="@font/nunito_black"/>
+            app:layout_constraintTop_toBottomOf="@id/appNameLayout" />
 
         <!-- Contenedor -->
         <LinearLayout
@@ -96,19 +97,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Usuario"
+                android:hint="Correo Electronico"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:startIconDrawable="@drawable/icon_usuario"
-                app:boxStrokeColor="@color/colorPrincipal">
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/negro"
-                    android:inputType="textPersonName"
-                    android:fontFamily="@font/nunito_bold"/>
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/negro" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Contra Input -->
@@ -120,25 +121,26 @@
                 android:hint="Contraseña"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:startIconDrawable="@drawable/icon_candado"
                 app:boxStrokeColor="@color/colorPrincipal"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/icon_candado">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextContrasenia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/negro"
                     android:fontFamily="@font/nunito_bold"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:textColor="@color/negro" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Contenedor de botones -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="0dp"
+                android:orientation="horizontal"
+                android:paddingBottom="75dp">
 
                 <Button
                     android:id="@+id/buttonRegistrar"
@@ -148,11 +150,11 @@
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorFondo"
+                    android:fontFamily="@font/nunito_semi_bold"
                     android:text="Registrar"
                     android:textColor="@color/negro"
                     android:textSize="16sp"
-                    app:cornerRadius="15dp"
-                    android:fontFamily="@font/nunito_semi_bold"/>
+                    app:cornerRadius="15dp" />
 
                 <Button
                     android:id="@+id/buttonIniciar"
@@ -162,11 +164,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorFondo"
+                    android:fontFamily="@font/nunito_semi_bold"
                     android:text="Iniciar"
                     android:textColor="@color/negro"
                     android:textSize="16sp"
-                    app:cornerRadius="15dp"
-                    android:fontFamily="@font/nunito_semi_bold"/>
+                    app:cornerRadius="15dp" />
             </LinearLayout>
         </LinearLayout>
 

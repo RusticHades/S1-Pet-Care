@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".Registro">
+    tools:context=".EditarPerfil">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,14 +31,13 @@
             android:background="@drawable/subrayado"
             android:fontFamily="@font/nunito_black"
             android:gravity="center"
-            android:text="Registro"
+            android:text="Editar Perfil"
             android:textColor="@color/blanco"
             android:textSize="32sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/headerImage" />
 
-        <!-- CardView circular para la foto de perfil -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="170dp"
@@ -52,38 +51,42 @@
             app:layout_constraintTop_toBottomOf="@id/textView3">
 
             <ImageView
-                android:id="@+id/imageViewFotoPerfil"
+                android:id="@+id/imageViewFotoPerfilEditar"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_gravity="center"
                 android:contentDescription="Foto de perfil del usuario"
                 android:scaleType="centerCrop"
-                android:src="@drawable/icon_foto_perfil" />
+                />
         </androidx.cardview.widget.CardView>
 
-        <!-- Contenedor del formulario -->
+        <!-- Botón para cambiar foto -->
+        <TextView
+            android:id="@+id/textViewCambiarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_bold"
+            android:text="Cambiar foto"
+            android:textColor="@color/colorSpam"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/formContainer"
+            app:layout_constraintEnd_toEndOf="@id/cardView"
+            app:layout_constraintStart_toStartOf="@id/cardView"
+            app:layout_constraintTop_toBottomOf="@id/cardView" />
+
         <LinearLayout
             android:id="@+id/formContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView">
+            app:layout_constraintTop_toBottomOf="@+id/textViewCambiarFoto">
 
-            <!-- Usuario input -->
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="15dp"
-                android:fontFamily="@font/nunito_black"
-                android:text="Foto de perfil"
-                android:textColor="@color/colorSpam" />
-
+            <!-- Nombre de Usuario -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -92,19 +95,19 @@
                 android:hint="Nombre de Usuario"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:startIconDrawable="@drawable/icon_usuario"
-                app:boxStrokeColor="@color/colorPrincipal">
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_usuario">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextNombreUsuario"
+                    android:id="@+id/eeditTextNombreMascota"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
                     android:inputType="textPersonName"
-                    android:textColor="@color/negro"
-                    android:fontFamily="@font/nunito_bold" />
+                    android:textColor="@color/negro" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Email input -->
+            <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -113,79 +116,107 @@
                 android:hint="Correo Electrónico"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:startIconDrawable="@drawable/icon_email"
                 app:boxStrokeColor="@color/colorPrincipal"
-                >
+                app:startIconDrawable="@drawable/icon_email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextCorreoElectronico"
+                    android:id="@+id/editTextCorreoElectronicoEditar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:fontFamily="@font/nunito_bold" />
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Contra input -->
+            <!-- Telefono -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Contraseña"
+                android:layout_marginBottom="8dp"
+                android:hint="Teléfono"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
-                app:startIconDrawable="@drawable/icon_candado"
                 app:boxStrokeColor="@color/colorPrincipal"
-                app:passwordToggleEnabled="true">
+                app:startIconDrawable="@drawable/icon_telefono">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextCrearContrasenia"
+                    android:id="@+id/editTextTelefonoEditar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:fontFamily="@font/nunito_bold"/>
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="phone"
+                    android:textColor="@color/negro" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Button de registro -->
-            <Button
-                android:id="@+id/buttonGuardar"
+            <!-- Direccion -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/colorFondo"
-                android:text="Guardar"
-                android:textColor="@color/negro"
-                android:textSize="18sp"
-                app:cornerRadius="15dp"
-                android:fontFamily="@font/nunito_semi_bold"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Dirección"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_direccion">
 
-            <!-- Link a inicio de sesion -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextFechaNacimientoMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="textPostalAddress"
+                    android:textColor="@color/negro" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:text="¿Ya tienes una cuenta?"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/nunito_regular"/>
+                <!-- Boton de cancelar -->
+                <Button
+                    android:id="@+id/buttonCancelarCambios"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorFondo"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:text="Cancelar"
+                    android:textColor="@color/negro"
+                    android:textSize="18sp"
+                    app:cornerRadius="15dp" />
 
-                <TextView
-                    android:id="@+id/buttonInicioSesion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Inicia sesión aquí"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorSpam"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/nunito_black_italic"/>
+                <!-- Button de guardar cambios -->
+                <Button
+                    android:id="@+id/buttonGuardarCambios"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorFondo"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:text="Guardar Cambios"
+                    android:textColor="@color/negro"
+                    android:textSize="18sp"
+                    app:cornerRadius="15dp" />
             </LinearLayout>
+
+            <!-- eliminar cuenta -->
+            <TextView
+                android:id="@+id/textViewEliminarCuenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito_bold"
+                android:gravity="center"
+                android:paddingBottom="50dp"
+                android:text="Eliminar cuenta"
+                android:textColor="@color/colorSpam"
+                android:textSize="16sp" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
