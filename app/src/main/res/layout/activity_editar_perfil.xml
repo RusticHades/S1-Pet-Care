@@ -57,7 +57,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="Foto de perfil del usuario"
                 android:scaleType="centerCrop"
-                />
+                android:src="@drawable/icon_foto_perfil"/>
         </androidx.cardview.widget.CardView>
 
         <!-- Botón para cambiar foto -->
@@ -133,7 +133,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Teléfono"
+                android:hint="Teléfono (opcional)"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
                 app:boxStrokeColor="@color/colorPrincipal"
@@ -154,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Dirección"
+                android:hint="Dirección (opcionl)"
                 app:boxCornerRadiusBottomEnd="25dp"
                 app:boxCornerRadiusTopStart="25dp"
                 app:boxStrokeColor="@color/colorPrincipal"

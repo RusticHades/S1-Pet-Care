@@ -1,34 +1,32 @@
 package com.example.petcare;
-    
+
 import android.content.Intent;
-    import android.content.SharedPreferences;
-    import android.os.Bundle;
-    import android.util.Log;
-    import android.view.View;
-    import android.widget.Button;
-    import android.widget.EditText;
-    import android.widget.Toast;
-    
-    import androidx.activity.EdgeToEdge;
-    import androidx.appcompat.app.AppCompatActivity;
-    
-    import org.json.JSONException;
-    import org.json.JSONObject;
-    
-    import java.io.BufferedReader;
-    import java.io.InputStream;
-    import java.io.InputStreamReader;
-    import java.io.OutputStream;
-    import java.net.HttpURLConnection;
-    import java.net.URL;
-    import java.net.URLEncoder;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class InicioDeSesion extends AppCompatActivity {
     private EditText txtCorreoElectronico, txtContrasenia;
     private Button btnRegistrar, btnIniciar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,49 +38,48 @@ public class InicioDeSesion extends AppCompatActivity {
         txtContrasenia = findViewById(R.id.editTextContrasenia);
         btnRegistrar = findViewById(R.id.buttonRegistrar);
         btnIniciar = findViewById(R.id.buttonIniciar);
-    
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(InicioDeSesion.this, Registro.class));
+
+        btnRegistrar.setOnClickListener(v ->
+                startActivity(new Intent(InicioDeSesion.this, Registro.class)));
+
+        btnIniciar.setOnClickListener(v -> {
+            String correo = txtCorreoElectronico.getText().toString();
+            String contrasenia = txtContrasenia.getText().toString();
+
+            if(validarDatos(correo, contrasenia)){
+                iniciarSesion(correo, contrasenia);
             }
         });
-    
-        btnIniciar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String correo = txtCorreoElectronico.getText().toString();
-                String contrasenia = txtContrasenia.getText().toString();
-    
-                if(validarDatos(correo, contrasenia)){
-                    iniciarSesion(correo, contrasenia);
-                }
-            }
-        });
+
+        //verificarSesionActiva();
     }
-    
-    private boolean validarDatos(String correo, String contrasenia){
-    
+
+    private void verificarSesionActiva() {
+        SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+        if (prefs.contains("usuario_id")) {
+            startActivity(new Intent(this, Inicio.class));
+            finish();
+        }
+    }
+
+    private boolean validarDatos(String correo, String contrasenia) {
         if (correo.isEmpty()) {
-            txtCorreoElectronico.setError("Ingrese un nombre de usuario");
+            txtCorreoElectronico.setError("Ingrese su correo electrónico");
             txtCorreoElectronico.requestFocus();
             return false;
         }
-    
+
         if (contrasenia.isEmpty()) {
-            txtContrasenia.setError("Ingrese una contraseña");
-            txtContrasenia.requestFocus();
-            return false;
-        } else if (contrasenia.length() < 8) {
-            txtContrasenia.setError("La contraseña debe tener al menos 8 caracteres");
+            txtContrasenia.setError("Ingrese su contraseña");
             txtContrasenia.requestFocus();
             return false;
         }
         return true;
     }
-    
+
     private void iniciarSesion(String correoElectronico, String contrasenia) {
         String url = "http://192.168.0.192:8080/miapp/login_usuario.php";
+
         new Thread(() -> {
             HttpURLConnection urlConnection = null;
             try {
@@ -101,7 +98,8 @@ public class InicioDeSesion extends AppCompatActivity {
                 }
 
                 int responseCode = urlConnection.getResponseCode();
-                InputStream inputStream = responseCode == HttpURLConnection.HTTP_OK ? urlConnection.getInputStream() : urlConnection.getErrorStream();
+                InputStream inputStream = responseCode == HttpURLConnection.HTTP_OK ?
+                        urlConnection.getInputStream() : urlConnection.getErrorStream();
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 StringBuilder response = new StringBuilder();
@@ -110,64 +108,63 @@ public class InicioDeSesion extends AppCompatActivity {
                     response.append(line);
                 }
 
-                Log.d("LOGIN", "Respuesta del servidor: " + response.toString());
-    
-                try {
-                    JSONObject jsonResponse = new JSONObject(response.toString());
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
-    
-                    runOnUiThread(() -> {
-                        if (success) {
-                            try {
-                                // Obtener datos del usuario
-                                JSONObject usuarioJson = jsonResponse.getJSONObject("usuario");
-                                String nombreUsuario = usuarioJson.getString("usuario");
-                                String tipoUsuario = usuarioJson.getString("tipo_usuario");
-                                String fotoUsuarioBase64 = usuarioJson.optString("foto_usuario", null);
-    
-                                // Guardar datos de sesion
-                                SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString("usuario_id", usuarioJson.getString("id"));
-                                editor.putString("usuario_nombre", nombreUsuario);
-                                editor.putString("usuario_correo", correoElectronico);
-                                editor.putString("usuario_tipo", tipoUsuario);
-                                if (fotoUsuarioBase64 != null && !fotoUsuarioBase64.isEmpty()) {
-                                    editor.putString("usuario_foto", fotoUsuarioBase64);
-                                }
-                                editor.apply();
-    
-                                Toast.makeText(InicioDeSesion.this, message, Toast.LENGTH_SHORT).show();
-    
-                                // Redirigir al Inicio
-                                startActivity(new Intent(InicioDeSesion.this, Inicio.class));
-                                finish();
+                Log.d("LOGIN", "Respuesta del servidor: " + response);
 
-                            } catch (JSONException e) {
-                                Toast.makeText(InicioDeSesion.this, "Error al procesar datos del usuario", Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Toast.makeText(InicioDeSesion.this, "Error: " + message, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } catch (JSONException e) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(InicioDeSesion.this, "Error en formato de respuesta: " + response.toString(), Toast.LENGTH_LONG).show();
-                    });
-                    e.printStackTrace();
-                }
+                procesarRespuestaLogin(response.toString(), correoElectronico);
+
             } catch (Exception e) {
-                runOnUiThread(() -> {
-                    Toast.makeText(InicioDeSesion.this, "Error de conexión: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-                e.printStackTrace();
+                runOnUiThread(() ->
+                        Toast.makeText(InicioDeSesion.this, "Error de conexión: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                Log.e("LOGIN", "Error: ", e);
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
             }
         }).start();
+    }
+
+    private void procesarRespuestaLogin(String jsonResponse, String correo) {
+        try {
+            JSONObject json = new JSONObject(jsonResponse);
+            boolean success = json.getBoolean("success");
+            String message = json.getString("message");
+
+            runOnUiThread(() -> {
+                if (success) {
+                    try {
+                        JSONObject usuarioJson = json.getJSONObject("usuario");
+                        String fotoUrl = json.optString("foto_url", null);
+
+                        // Guardar datos de sesión
+                        SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("usuario_id", usuarioJson.getString("id"));
+                        editor.putString("usuario_nombre", usuarioJson.getString("usuario"));
+                        editor.putString("usuario_correo", correo);
+                        editor.putString("usuario_tipo", usuarioJson.getString("tipo_usuario"));
+                        if (fotoUrl != null && !fotoUrl.isEmpty()) {
+                            editor.putString("usuario_foto_url", fotoUrl);
+                        }
+                        editor.apply();
+
+                        // Redirigir a la pantalla principal
+                        startActivity(new Intent(InicioDeSesion.this, Inicio.class));
+                        finish();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(InicioDeSesion.this, "Error al procesar datos del usuario", Toast.LENGTH_LONG).show();
+                        Log.e("LOGIN", "Error parsing user data", e);
+                    }
+                } else {
+                    Toast.makeText(InicioDeSesion.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (JSONException e) {
+            runOnUiThread(() ->
+                    Toast.makeText(InicioDeSesion.this, "Error en formato de respuesta", Toast.LENGTH_LONG).show());
+            Log.e("LOGIN", "Error parsing JSON", e);
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
@@ -20,6 +21,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     protected DrawerLayout drawerLayout;
@@ -66,6 +70,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        actualizarHeaderNavigationView();
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -102,37 +112,63 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         }
     }
     public void actualizarHeaderNavigationView() {
-        if (navigationView != null) {
-            View headerView = navigationView.getHeaderView(0);
-            TextView textViewUserName = headerView.findViewById(R.id.textViewUserName);
-            ImageView imageViewProfile = headerView.findViewById(R.id.imageViewProfile);
+        runOnUiThread(() -> {
+            if (navigationView != null) {
+                View headerView = navigationView.getHeaderView(0);
+                TextView textViewUserName = headerView.findViewById(R.id.textViewUserName);
+                ImageView imageViewProfile = headerView.findViewById(R.id.imageViewProfile);
 
-            SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
 
-            // Obtener datos del usuario
-            String nombre = prefs.getString("usuario_nombre", "Nombre de Usuario");
-            String fotoBase64 = prefs.getString("usuario_foto", null);
+                // Obtener datos actualizados del usuario
+                String nombre = prefs.getString("usuario_nombre", "Nombre de Usuario");
+                String fotoUrl = prefs.getString("usuario_foto_url", null); // Cambiado a foto_url
 
-            // Actualizar nombre
-            textViewUserName.setText(nombre);
+                // Actualizar nombre
+                textViewUserName.setText(nombre);
 
-            // Actualizar foto de perfil
-            if (fotoBase64 != null && !fotoBase64.isEmpty()) {
-                try {
-                    byte[] decodedBytes = Base64.decode(fotoBase64, Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-
-                    imageViewProfile.setBackground(null);
-                    imageViewProfile.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    imageViewProfile.setImageBitmap(bitmap);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                // Actualizar foto de perfil
+                if (fotoUrl != null && !fotoUrl.isEmpty()) {
+                    new CargarImagenHeaderTask(imageViewProfile).execute(fotoUrl);
+                } else {
                     imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);
                     imageViewProfile.setBackground(null);
                 }
+            }
+        });
+    }
+
+    // AsyncTask para cargar la imagen del header
+    private class CargarImagenHeaderTask extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView imageView;
+
+        public CargarImagenHeaderTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                return BitmapFactory.decodeStream(connection.getInputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setBackground(null);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setImageBitmap(result);
             } else {
-                imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);
-                imageViewProfile.setBackground(null);
+                imageView.setImageResource(R.drawable.usuario_predeterminado);
+                imageView.setBackground(null);
             }
         }
     }

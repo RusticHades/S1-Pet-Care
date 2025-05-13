@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -41,6 +44,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Registro extends AppCompatActivity {
 
@@ -244,109 +249,99 @@ public class Registro extends AppCompatActivity {
         return true;
     }
 
-    private void registrarUsuario(String usuario, String correoElectronico, String contrasenia, String tipoUsuario, byte[] fotoPerfil) {
-        String url = "http://192.168.0.192:8080/miapp/guardar_usuario.php";
-
-        String aux;
-
-        if (fotoPerfil == null || fotoPerfil.length == 0) {
-            // Convertir drawable a bitmap
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.usuario_predeterminado);
-
-            // Convertir bitmap a bytes
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] defaultImageBytes = stream.toByteArray();
-
-            // Convertir a Base64 (usando android.util.Base64)
-            aux = android.util.Base64.encodeToString(defaultImageBytes, android.util.Base64.NO_WRAP);
-        } else {
-            // Usar la foto proporcionada
-            aux = android.util.Base64.encodeToString(fotoPerfil, android.util.Base64.NO_WRAP);
-
-            // Limitar tamaño si es muy grande
-            if (aux.length() > 500000) {
-                aux = aux.substring(0, 500000);
-                Log.w("REGISTRO", "Imagen demasiado grande, se recortó");
-            }
-        }
-
-        String fotoPerfilBase64 = aux;
-
+    private void registrarUsuario(String usuario, String correoElectronico, String contrasenia, String tipoUsuario, byte[] fotoPerfilBytes) {
         new Thread(() -> {
-            HttpURLConnection urlConnection = null;
             try {
-                URL urlObj = new URL(url);
-                urlConnection = (HttpURLConnection) urlObj.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                // Configurar la conexión
+                URL url = new URL("http://192.168.0.192:8080/miapp/guardar_usuario.php");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
 
-                String postData = "usuario=" + URLEncoder.encode(usuario, "UTF-8") +
-                        "&correo=" + URLEncoder.encode(correoElectronico, "UTF-8") +
-                        "&contrasenia=" + URLEncoder.encode(contrasenia, "UTF-8") +
-                        "&tipo_usuario=" + URLEncoder.encode(tipoUsuario, "UTF-8") +
-                        "&foto_usuario=" + URLEncoder.encode(fotoPerfilBase64, "UTF-8");
+                // Crear los parámetros
+                String boundary = "Boundary-" + System.currentTimeMillis();
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
-                try (OutputStream outputStream = urlConnection.getOutputStream()) {
-                    outputStream.write(postData.getBytes());
-                    outputStream.flush();
+                OutputStream outputStream = connection.getOutputStream();
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+
+                // Añadir parámetros normales
+                addFormField(writer, "usuario", usuario, boundary);
+                addFormField(writer, "correo", correoElectronico, boundary);
+                addFormField(writer, "contrasenia", contrasenia, boundary);
+                addFormField(writer, "tipo_usuario", tipoUsuario, boundary);
+
+                // Añadir la imagen si existe
+                if (fotoPerfilBytes != null && fotoPerfilBytes.length > 0) {
+                    addFilePart(writer, outputStream, "foto_usuario", fotoPerfilBytes, "perfil.jpg", boundary);
                 }
 
-                int responseCode = urlConnection.getResponseCode();
-                InputStream inputStream = responseCode == HttpURLConnection.HTTP_OK ?
-                        urlConnection.getInputStream() : urlConnection.getErrorStream();
+                // Finalizar la solicitud
+                writer.append("--").append(boundary).append("--").append("\r\n");
+                writer.flush();
+                writer.close();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
+                // Obtener la respuesta
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
 
-                try {
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    // Procesar la respuesta JSON
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
                     runOnUiThread(() -> {
+                        Toast.makeText(Registro.this, message, Toast.LENGTH_SHORT).show();
                         if (success) {
-                            Toast.makeText(Registro.this, message, Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Registro.this, InicioDeSesion.class));
                             finish();
-                        } else {
-                            Toast.makeText(Registro.this, "Error: " + message, Toast.LENGTH_LONG).show();
                         }
                     });
-                } catch (JSONException e) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(Registro.this,
-                                "Error en formato de respuesta: " + response.toString(),
-                                Toast.LENGTH_LONG).show();
-                    });
-                    e.printStackTrace();
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(Registro.this, "Error en el servidor: " + responseCode, Toast.LENGTH_SHORT).show());
                 }
+
+                connection.disconnect();
             } catch (Exception e) {
-                runOnUiThread(() -> {
-                    Toast.makeText(Registro.this,
-                            "Error de conexión: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                });
                 e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
+                runOnUiThread(() ->
+                        Toast.makeText(Registro.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         }).start();
     }
-    private String obtenerMensajeError(Exception e) {
-        if (e instanceof ConnectException || e instanceof UnknownHostException) {
-            return "No se pudo conectar al servidor. Verifica tu conexión a Internet.";
-        } else if (e instanceof SocketTimeoutException) {
-            return "Tiempo de espera agotado. Intenta nuevamente.";
-        } else {
-            return "Error al registrar: " + e.getMessage();
-        }
+
+    // Métodos auxiliares para construir la solicitud multipart
+    private void addFormField(PrintWriter writer, String name, String value, String boundary) {
+        writer.append("--").append(boundary).append("\r\n");
+        writer.append("Content-Disposition: form-data; name=\"").append(name).append("\"\r\n");
+        writer.append("\r\n");
+        writer.append(value).append("\r\n");
+        writer.flush();
     }
+
+    private void addFilePart(PrintWriter writer, OutputStream outputStream, String fieldName, byte[] fileData, String fileName, String boundary) throws IOException {
+        writer.append("--").append(boundary).append("\r\n");
+        writer.append("Content-Disposition: form-data; name=\"").append(fieldName)
+                .append("\"; filename=\"").append(fileName).append("\"\r\n");
+        writer.append("Content-Type: image/jpeg\r\n");
+        writer.append("Content-Transfer-Encoding: binary\r\n");
+        writer.append("\r\n");
+        writer.flush();
+
+        outputStream.write(fileData);
+        outputStream.flush();
+
+        writer.append("\r\n");
+        writer.flush();
+    }
+
 }
