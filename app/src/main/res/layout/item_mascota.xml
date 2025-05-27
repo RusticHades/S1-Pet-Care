@@ -30,7 +30,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textViewNombre"
+                android:id="@+id/textViewNombreMascota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_black"
@@ -40,7 +40,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textViewEspecieRaza"
+                android:id="@+id/textViewEspecieRazaMascota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -50,7 +50,7 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textViewEdadSexo"
+                android:id="@+id/textViewEdadSexoMascota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
