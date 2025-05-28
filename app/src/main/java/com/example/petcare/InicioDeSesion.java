@@ -78,7 +78,7 @@ public class InicioDeSesion extends AppCompatActivity {
     }
 
     private void iniciarSesion(String correoElectronico, String contrasenia) {
-        String url = "http://192.168.0.192:8080/miapp/login_usuario.php";
+        String url = getString(R.string.url_servidor) + "/miapp/login_usuario.php";
 
         new Thread(() -> {
             HttpURLConnection urlConnection = null;

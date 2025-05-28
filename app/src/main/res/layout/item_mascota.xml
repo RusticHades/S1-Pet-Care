@@ -15,13 +15,30 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/imageViewMascota"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/foto_perfil_mascota" />
+        <!-- Contenedor para imagen de mascota y QR -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageViewMascota"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/foto_perfil_mascota" />
+
+            <!-- Botón/icono QR -->
+            <ImageButton
+                android:id="@+id/btnQrMascota"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,37 +76,17 @@
                 android:textColor="@color/negro"
                 android:textSize="14sp" />
 
-            <LinearLayout
+            <!-- Solo botón de editar -->
+            <Button
+                android:id="@+id/buttonEditarMascota"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/buttonEliminarMascota"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/colorSpam"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="Eliminar"
-                    android:textColor="@color/blanco"
-                    app:cornerRadius="10dp" />
-
-                <Button
-                    android:id="@+id/buttonEditarMascota"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/colorSpam"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="Editar"
-                    android:textColor="@color/blanco"
-                    app:cornerRadius="10dp" />
-
-            </LinearLayout>
+                android:backgroundTint="@color/colorSpam"
+                android:fontFamily="@font/nunito_bold"
+                android:text="Editar Mascota"
+                android:textColor="@color/blanco"
+                app:cornerRadius="10dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

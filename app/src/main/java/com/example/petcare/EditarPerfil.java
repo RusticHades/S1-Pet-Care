@@ -258,7 +258,7 @@ public class EditarPerfil extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
                 String idUsuario = prefs.getString("usuario_id", "");
 
-                URL url = new URL("http://192.168.0.192:8080/miapp/actualizar_perfil.php");
+                URL url = new URL(getString(R.string.url_servidor) + "/miapp/actualizar_perfil.php");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");

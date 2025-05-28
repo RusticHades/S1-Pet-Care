@@ -136,7 +136,7 @@ public class InformacionDeUsuario extends BaseActivity {
         @Override
         protected String doInBackground(Void... voids) {
 
-            String urlServer = "http://192.168.0.192:8080/miapp/obtener_mascotas.php?id_usuario=1";
+            String urlServer = getString(R.string.url_servidor) + "/miapp/obtener_mascotas.php?id_usuario=2";
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String respuestaJson = null;

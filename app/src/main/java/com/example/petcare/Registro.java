@@ -253,7 +253,7 @@ public class Registro extends AppCompatActivity {
         new Thread(() -> {
             try {
                 // Configurar la conexión
-                URL url = new URL("http://192.168.0.192:8080/miapp/guardar_usuario.php");
+                URL url = new URL(getString(R.string.url_servidor) + "/miapp/guardar_usuario.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);

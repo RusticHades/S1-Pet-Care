@@ -74,8 +74,6 @@ public class AgregarMascota extends BaseActivity {
     }
 
     private void seleccionarFotoMascota() {
-        // Implementar lógica para seleccionar foto (similar a EditarPerfil)
-        // ...
     }
 
     private void mostrarDatePicker() {
@@ -160,7 +158,7 @@ public class AgregarMascota extends BaseActivity {
         protected String doInBackground(String... params) {
             HttpURLConnection connection = null;
             try {
-                URL url = new URL("http://192.168.50.137:8080/miapp/guardar_mascota.php");
+                URL url = new URL(getString(R.string.url_servidor) + "/miapp/guardar_mascota.php");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
