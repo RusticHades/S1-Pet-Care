@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorFondo">
 
-
+    <!-- Nombre de la mascota -->
     <TextView
         android:id="@+id/textViewNombreMascotaInicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/nunito_black"
         android:text="Mascota 1"
         android:textColor="@color/colorSpam"
-        android:textSize="30sp"
+        android:textSize="28sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Contenedor de la imagen -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contenedorImagenMascota1"
+        android:id="@+id/contenedorImagenMascotaInicio"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNombreMascotaInicio">
@@ -32,157 +37,184 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/colorPrincipal"
-            app:cardCornerRadius="20dp">
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true">
 
             <ImageView
-                android:id="@+id/imageViewMascota1"
+                android:id="@+id/imageViewMascotaInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/foto_perfil_mascota"
-                app:layout_constraintBottom_toBottomOf="parent" />
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/colorSecundario"
-            app:cardCornerRadius="25dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:id="@+id/imageViewCamara1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/icon_foto_perfil" />
+                android:src="@drawable/foto_perfil_mascota" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <LinearLayout
-        android:id="@+id/botonesMascota1"
+    <!-- Menú de opciones -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contenedorBotonesMascota"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contenedorImagenMascota1">
+        app:layout_constraintTop_toBottomOf="@id/contenedorImagenMascotaInicio">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+        <!-- Primera fila -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAgendarCita"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginEnd="8dp"
+            app:cardBackgroundColor="@color/blanco"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/cardHistorial"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="16dp">
 
                 <ImageView
-                    android:id="@+id/imageViewAgendar1"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:id="@+id/imageViewAgendarCitaMascotaInicio"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:tint="@color/colorPrincipal"
                     app:srcCompat="@drawable/icon_menu_citas" />
 
                 <TextView
-                    android:id="@+id/textViewAgendar1"
+                    android:id="@+id/textViewAgendarCita"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/nunito_bold"
                     android:text="Agendar Cita"
+                    android:textColor="@color/negro"
                     android:textSize="14sp" />
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardHistorial"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            app:cardBackgroundColor="@color/blanco"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cardAgendarCita"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="16dp">
 
                 <ImageView
-                    android:id="@+id/imageViewHistorial1"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:srcCompat="@drawable/icon_email" />
-
-                <TextView
-                    android:id="@+id/textViewHistorial1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/nunito_bold"
-                    android:text="Historial Medico"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/imageViewCitas1"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:id="@+id/imageViewHistorialMedicoMascotaInicio"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:tint="@color/colorPrincipal"
                     app:srcCompat="@drawable/icon_menu_historial" />
 
                 <TextView
-                    android:id="@+id/textViewCitas1"
+                    android:id="@+id/textViewHistorialMedico"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="Citas"
+                    android:text="Historial Médico"
+                    android:textColor="@color/negro"
                     android:textSize="14sp" />
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Segunda fila -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCitas"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:cardBackgroundColor="@color/blanco"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/cardQR"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardAgendarCita">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="16dp">
 
                 <ImageView
-                    android:id="@+id/imageViewTratamientos1"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:id="@+id/imageViewCitasMascotaInicio"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:tint="@color/colorPrincipal"
+                    app:srcCompat="@drawable/icon_menu_agendar" />
+
+                <TextView
+                    android:id="@+id/textViewCitas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Mis Citas"
+                    android:textColor="@color/negro"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardQR"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/blanco"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cardCitas"
+            app:layout_constraintTop_toBottomOf="@+id/cardHistorial">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/imageViewQrMascotaInicio"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     app:srcCompat="@drawable/imagen_qr_generico" />
 
                 <TextView
-                    android:id="@+id/textViewTratamientos1"
+                    android:id="@+id/textViewQRVeterinario"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="QR"
+                    android:text="Mi QR"
+                    android:textColor="@color/negro"
                     android:textSize="14sp" />
             </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

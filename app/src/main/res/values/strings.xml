@@ -7,5 +7,5 @@
     </string-array>
 
 
-    <string name="url_servidor">http://192.168.228.137:8080</string>
+    <string name="url_servidor">http://192.168.0.192:8080</string>
 </resources>
