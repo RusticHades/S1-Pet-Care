@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -124,11 +125,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 String nombre = prefs.getString("usuario_nombre", "Nombre de Usuario");
                 String fotoUrl = prefs.getString("usuario_foto_url", null); // Cambiado a foto_url
 
+
                 // Actualizar nombre
                 textViewUserName.setText(nombre);
 
                 // Actualizar foto de perfil
                 if (fotoUrl != null && !fotoUrl.isEmpty()) {
+                    Toast.makeText(this,fotoUrl, Toast.LENGTH_SHORT).show();
                     new CargarImagenHeaderTask(imageViewProfile).execute(fotoUrl);
                 } else {
                     imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);

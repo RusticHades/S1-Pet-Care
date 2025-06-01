@@ -11,14 +11,19 @@ public class Mascotas {
     public String sexoMascota;
     public String pesoMascota;
     public String esterilizadoMascota;
+    public String fotoMascota;
 
-    public Mascotas(String idMascota, String nombreMascota, String especieMascota, String razaMascota, String edadMascota, String sexoMascota) {
+    public Mascotas(String idMascota, String nombreMascota, String especieMascota, String razaMascota, String edadMascota, String sexoMascota, String fotoMascota) {
         this.idMascota = idMascota;
         this.nombreMascota = nombreMascota;
         this.especieMascota = especieMascota;
         this.edadMascota = edadMascota;
         this.razaMascota = razaMascota;
         this.sexoMascota = sexoMascota;
+        this.fotoMascota = fotoMascota;
+    }
+    public String getFotoMascota() {
+        return fotoMascota;
     }
 
     public String getIdMascota() {

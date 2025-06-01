@@ -316,6 +316,18 @@
                     android:textSize="18sp"
                     app:cornerRadius="15dp" />
             </LinearLayout>
+            <!-- Botón para eliminar mascota -->
+            <Button
+                android:id="@+id/buttonEliminar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/rojo"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:text="ELIMINAR MASCOTA"
+                android:textColor="@color/blanco"
+                android:textSize="18sp"
+                app:cornerRadius="15dp" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

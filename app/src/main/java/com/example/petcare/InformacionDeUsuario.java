@@ -82,7 +82,7 @@ public class InformacionDeUsuario extends BaseActivity {
 
         rycViewMascotas = findViewById(R.id.recyclerViewMascotas);
         rycViewMascotas.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MascotasAdapter(mascotasList);
+        adapter = new MascotasAdapter(mascotasList, this);
         rycViewMascotas.setAdapter(adapter);
 
         new InformacionDeUsuario.ObtenerAnimalesTask().execute();
@@ -136,7 +136,15 @@ public class InformacionDeUsuario extends BaseActivity {
         @Override
         protected String doInBackground(Void... voids) {
 
-            String urlServer = getString(R.string.url_servidor) + "/miapp/obtener_mascotas.php?id_usuario=2";
+            SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+            String idUsuario = prefs.getString("usuario_id", ""); // Asegúrate de que esta clave coincida con cómo guardas el ID
+
+            // Verificar que tenemos un ID de usuario válido
+            if (idUsuario.isEmpty()) {
+                return null;
+            }
+
+            String urlServer = getString(R.string.url_servidor) + "/miapp/obtener_mascotas.php?id_usuario=" + idUsuario;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String respuestaJson = null;
@@ -200,7 +208,8 @@ public class InformacionDeUsuario extends BaseActivity {
                                 jsonObject.getString("especie"),
                                 jsonObject.getString("raza"),
                                 jsonObject.getString("edad"),
-                                jsonObject.getString("sexo")
+                                jsonObject.getString("sexo"),
+                                jsonObject.optString("foto_mascota", "") // Nuevo campo para la foto
                         ));
                     }
 

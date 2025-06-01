@@ -1,10 +1,17 @@
 package com.example.petcare;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,16 +19,17 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -31,12 +39,18 @@ import java.util.Locale;
 
 public class AgregarMascota extends BaseActivity {
 
+    private static final int CODIGO_PERMISOS_CAMARA = 100;
+    private static final int CODIGO_PERMISOS_ALMACENAMIENTO = 101;
+    private static final int CODIGO_TOMAR_FOTO = 102;
+    private static final int CODIGO_SELECCIONAR_IMAGEN = 103;
+
     private ImageView imageViewMascota;
     private EditText editTextNombre, editTextEspecie, editTextRaza, editTextFechaNacimiento, editTextEdad, editTextPeso;
     private Spinner spinnerSexo;
     private Switch switchEsterilizado;
     private Button btnGuardar, btnCancelar;
     private byte[] fotoMascotaBytes;
+    private Uri fotoMascotaUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +88,120 @@ public class AgregarMascota extends BaseActivity {
     }
 
     private void seleccionarFotoMascota() {
+        mostrarDialogoSeleccionImagen();
+    }
+
+    private void mostrarDialogoSeleccionImagen() {
+        final CharSequence[] opciones = {"Tomar foto", "Elegir de galería", "Cancelar"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleccionar foto de mascota");
+        builder.setItems(opciones, (dialog, which) -> {
+            if (opciones[which].equals("Tomar foto")) {
+                verificarPermisosCamara();
+            } else if (opciones[which].equals("Elegir de galería")) {
+                verificarPermisosAlmacenamiento();
+            } else {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void verificarPermisosAlmacenamiento() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    CODIGO_PERMISOS_ALMACENAMIENTO);
+        } else {
+            seleccionarImagenDeGaleria();
+        }
+    }
+
+    private void verificarPermisosCamara() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CODIGO_PERMISOS_CAMARA);
+        } else {
+            tomarFotoConCamara();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CODIGO_PERMISOS_ALMACENAMIENTO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                seleccionarImagenDeGaleria();
+            } else {
+                Toast.makeText(this, "Se necesitan permisos para acceder a la galería", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == CODIGO_PERMISOS_CAMARA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                tomarFotoConCamara();
+            } else {
+                Toast.makeText(this, "Se necesitan permisos para usar la cámara", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void seleccionarImagenDeGaleria() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), CODIGO_SELECCIONAR_IMAGEN);
+    }
+
+    private void tomarFotoConCamara() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, CODIGO_TOMAR_FOTO);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CODIGO_SELECCIONAR_IMAGEN && data != null) {
+                fotoMascotaUri = data.getData();
+                imageViewMascota.setImageURI(fotoMascotaUri);
+                imageViewMascota.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                imageViewMascota.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+                try {
+                    // Convertir la imagen seleccionada a bytes
+                    InputStream inputStream = getContentResolver().openInputStream(fotoMascotaUri);
+                    fotoMascotaBytes = getBytes(inputStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
+                }
+
+            } else if (requestCode == CODIGO_TOMAR_FOTO && data != null) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                imageViewMascota.setImageBitmap(imageBitmap);
+                imageViewMascota.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                imageViewMascota.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                fotoMascotaBytes = stream.toByteArray();
+            }
+        }
+    }
+
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
     private void mostrarDatePicker() {

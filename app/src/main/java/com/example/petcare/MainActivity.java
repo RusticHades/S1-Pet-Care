@@ -42,7 +42,7 @@
     
             recyclerView = findViewById(R.id.recyclerViewMascotas);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new MascotasAdapter(mascotasList);
+            adapter = new MascotasAdapter(mascotasList, this);
             recyclerView.setAdapter(adapter);
     
             new ObtenerAnimalesTask().execute();
@@ -118,7 +118,8 @@
                                     jsonObject.getString("especie"),
                                     jsonObject.getString("raza"),
                                     jsonObject.getString("edad"),
-                                    jsonObject.getString("sexo")
+                                    jsonObject.getString("sexo"),
+                                    jsonObject.optString("foto_mascota", "") // Nuevo campo para la foto
                             ));
                         }
 
