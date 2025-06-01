@@ -18,9 +18,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$id_usuario = isset($_GET['id_usuario']) ? intval($_GET['id_usuario']) : 2;
+$id_usuario = isset($_GET['id_usuario']) ? intval($_GET['id_usuario']) : -1;
 
-$sql = "SELECT id_mascota, nombre, especie, raza,  edad, sexo  FROM MASCOTAS WHERE id_usuario = $id_usuario";
+$sql = "SELECT id_mascota, nombre, especie, raza,  edad, sexo, foto_mascota  FROM MASCOTAS WHERE id_usuario = $id_usuario";
 $result = $conn->query($sql);
 
 $mascotas = array();

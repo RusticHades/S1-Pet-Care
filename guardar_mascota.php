@@ -50,7 +50,26 @@ try {
     $sexo = $conn->real_escape_string($data['sexo']);
     $peso = isset($data['peso']) ? (float)$data['peso'] : null;
     $esterilizado = isset($data['esterilizado']) ? (bool)$data['esterilizado'] : false;
-    $foto_mascota = isset($data['foto_mascota']) ? $data['foto_mascota'] : null;
+    
+    // Manejo de la imagen
+    $ruta_imagen = null;
+    if (isset($data['foto_mascota']) && !empty($data['foto_mascota'])) {
+        $directorio = $_SERVER['DOCUMENT_ROOT'] . "/miapp/images/fotoMascotas/";
+        if (!file_exists($directorio)) {
+            mkdir($directorio, 0777, true);
+        }
+        
+        $nombre_archivo = uniqid('mascota_') . '.jpg';
+        $ruta_completa = $directorio . $nombre_archivo;
+        $ruta_para_bd = "images/fotoMascotas/" . $nombre_archivo;
+        
+        $imagen_decodificada = base64_decode($data['foto_mascota']);
+        if (file_put_contents($ruta_completa, $imagen_decodificada)) {
+            $ruta_imagen = $ruta_para_bd;
+        } else {
+            throw new Exception("Error al guardar la imagen");
+        }
+    }
 
     // Insertar mascota
     $query = "INSERT INTO mascotas (
@@ -62,14 +81,15 @@ try {
     $stmt->bind_param(
         "issssisibs",
         $id_usuario, $nombre, $especie, $raza, $fecha_nacimiento,
-        $edad, $sexo, $peso, $esterilizado, $foto_mascota
+        $edad, $sexo, $peso, $esterilizado, $ruta_imagen
     );
     
     if ($stmt->execute()) {
         $response = [
             'success' => true,
             'message' => 'Mascota registrada exitosamente',
-            'id_mascota' => $stmt->insert_id
+            'id_mascota' => $stmt->insert_id,
+            'foto_url' => $ruta_imagen
         ];
     } else {
         throw new Exception("Error al registrar mascota: " . $stmt->error);
