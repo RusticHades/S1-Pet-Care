@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -42,6 +42,8 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.Mascot
     @Override
     public void onBindViewHolder(@NonNull MascotasViewHolder holder, int position) {
         Mascotas mascota = mascotas.get(position);
+
+        // Configurar textos
         holder.txtNombreMascota.setText(mascota.getNombreMascota());
 
         if(mascota.getRazaMascota() == null || mascota.getRazaMascota().isEmpty()) {
@@ -49,30 +51,35 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.Mascot
         } else {
             holder.txtEspecieRazaMascota.setText(mascota.getEspecieMascota() + " - " + mascota.getRazaMascota());
         }
-        holder.txtEdadSexoMascota.setText(mascota.getEdadMascota() + " años - " + mascota.getSexoMascota());
 
-        // Cargar la imagen de la mascota
-        if (mascota.getFotoMascota() != null && !mascota.getFotoMascota().isEmpty()) {
-            if (mascota.getFotoMascota().startsWith("images/")) {
-                // Es una URL, cargamos desde el servidor
-                String urlCompleta = context.getString(R.string.url_servidor) + "/miapp/" + mascota.getFotoMascota();
-                Toast.makeText(context, urlCompleta, Toast.LENGTH_LONG).show();
-                new CargarImagenMascotaTask(holder.imgMascota).execute(urlCompleta);
-            } else {
-                // Es base64 (para compatibilidad con versiones anteriores)
-                try {
-                    byte[] decodedString = Base64.decode(mascota.getFotoMascota(), Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    holder.imgMascota.setImageBitmap(decodedByte);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mostrarImagenPredeterminada(holder.imgMascota);
-                }
-            }
-        } else {
+        holder.txtEdadSexoMascota.setText(String.format("%s años - %s",
+                mascota.getEdadMascota(),
+                mascota.getSexoMascota()));
+
+        // Manejo mejorado de la imagen
+        String fotoMascota = mascota.getFotoMascota();
+        if (fotoMascota == null || fotoMascota.isEmpty() || fotoMascota.equals("null")) {
             mostrarImagenPredeterminada(holder.imgMascota);
+        } else if (fotoMascota.startsWith("http")) {
+            // Cargar desde URL completa
+            new CargarImagenMascotaTask(holder.imgMascota).execute(fotoMascota);
+        } else if (fotoMascota.startsWith("images/")) {
+            // Cargar desde ruta relativa del servidor
+            String urlCompleta = context.getString(R.string.url_servidor) + "/miapp/" + fotoMascota;
+            new CargarImagenMascotaTask(holder.imgMascota).execute(urlCompleta);
+        } else {
+            // Intentar cargar como base64
+            try {
+                byte[] decodedString = Base64.decode(fotoMascota, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.imgMascota.setImageBitmap(decodedByte);
+            } catch (Exception e) {
+                e.printStackTrace();
+                mostrarImagenPredeterminada(holder.imgMascota);
+            }
         }
 
+        // Configurar click listener para editar
         holder.btnEditarMascota.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditarMascota.class);
             intent.putExtra("id_mascota", mascota.getIdMascota());
@@ -113,16 +120,38 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.Mascot
 
         @Override
         protected Bitmap doInBackground(String... urls) {
+            HttpURLConnection connection = null;
+            InputStream input = null;
+
             try {
                 URL url = new URL(urls[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
+                connection.setConnectTimeout(10000); // 10 segundos de timeout
+                connection.setReadTimeout(10000);
                 connection.connect();
-                InputStream input = connection.getInputStream();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    return null;
+                }
+
+                input = connection.getInputStream();
                 return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                if (input != null) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 

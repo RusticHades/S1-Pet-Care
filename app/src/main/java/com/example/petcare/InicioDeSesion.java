@@ -51,7 +51,7 @@ public class InicioDeSesion extends AppCompatActivity {
             }
         });
 
-        //verificarSesionActiva();
+        verificarSesionActiva();
     }
 
     private void verificarSesionActiva() {

@@ -131,7 +131,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
                 // Actualizar foto de perfil
                 if (fotoUrl != null && !fotoUrl.isEmpty()) {
-                    Toast.makeText(this,fotoUrl, Toast.LENGTH_SHORT).show();
                     new CargarImagenHeaderTask(imageViewProfile).execute(fotoUrl);
                 } else {
                     imageViewProfile.setImageResource(R.drawable.usuario_predeterminado);

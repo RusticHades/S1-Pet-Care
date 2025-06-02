@@ -1,391 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:background="@color/colorFondo"
     tools:context=".Inicio">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Título de la pantalla -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Mis Mascotas"
+        android:textColor="@color/colorSpam"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/nunito_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Contenedor principal que cambiará según el estado -->
+    <FrameLayout
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleText">
 
-        <!-- Mascota 1 Section -->
-        <TextView
-            android:id="@+id/textViewMascota1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/nunito_black"
-            android:text="Mascota 1"
-            android:textColor="@color/colorSpam"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- Vista cuando hay mascotas -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMascotas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contenedorImagenMascota1"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewMascota1">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/colorPrincipal"
-                app:cardCornerRadius="20dp">
-
-                <ImageView
-                    android:id="@+id/imageViewMascota1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/foto_perfil_mascota" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Icono cámara Mascota 1 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/colorSecundario"
-                app:cardCornerRadius="25dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <ImageView
-                    android:id="@+id/imageViewCamara1"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/icon_foto_perfil" />
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Botones Mascota 1 -->
+        <!-- Vista cuando no hay mascotas -->
         <LinearLayout
-            android:id="@+id/botonesMascota1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="center"
+            android:id="@+id/emptyStateView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contenedorImagenMascota1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewAgendar1"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_menu_citas" />
-
-                    <TextView
-                        android:id="@+id/textViewAgendar1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Agendar Cita"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewHistorial1"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewHistorial1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Historial Medico"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewCitas1"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewCitas1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Citas"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewTratamientos1"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewTratamientos1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Tratamientos"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Mascota 2 Section -->
-        <TextView
-            android:id="@+id/textViewMascota2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/nunito_black"
-            android:text="Mascota 2"
-            android:textColor="@color/colorSpam"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/botonesMascota1" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contenedorImagenMascota2"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewMascota2">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/colorPrincipal"
-                app:cardCornerRadius="20dp">
-
-                <ImageView
-                    android:id="@+id/imageViewMascota2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/foto_perfil_mascota_2" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Icono cámara Mascota 2 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/colorSecundario"
-                app:cardCornerRadius="25dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <ImageView
-                    android:id="@+id/imageViewCamara2"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/icon_foto_perfil" />
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Botones Mascota 2 -->
-        <LinearLayout
-            android:id="@+id/botonesMascota2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contenedorImagenMascota2">
+            android:padding="32dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/foto_perfil_mascota"
+                android:tint="@color/colorPrincipal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_marginTop="24dp"
+                android:text="No hay mascotas"
+                android:textColor="@color/colorSpam"
+                android:textSize="18sp"
+                android:textAlignment="center"
+                android:fontFamily="@font/nunito_bold"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewAgendar2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_menu_citas" />
-
-                    <TextView
-                        android:id="@+id/textViewAgendar2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Agendar Cita"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewHistorial2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewHistorial2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Historial Medico"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewCitas2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewCitas2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Citas"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewTratamientos2"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:srcCompat="@drawable/icon_email" />
-
-                    <TextView
-                        android:id="@+id/textViewTratamientos2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_bold"
-                        android:text="Tratamientos"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:text="No se tiene ninguna mascota"
+                android:textColor="@color/negro"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:fontFamily="@font/nunito_regular"/>
         </LinearLayout>
+    </FrameLayout>
 
-        <!-- Footer Image -->
-        <ImageView
-            android:id="@+id/footerImage"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/margen_inferior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/botonesMascota2" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    <!-- Footer Image -->
+    <ImageView
+        android:id="@+id/footerImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/margen_inferior"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
