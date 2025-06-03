@@ -54,7 +54,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/foto_perfil_mascota"
+                android:src="@drawable/icon_sin_mascotas"
                 android:tint="@color/colorPrincipal"/>
 
             <TextView
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="No se tiene ninguna mascota"
+                android:text="Agregue una mascota en su perfil para continuar"
                 android:textColor="@color/negro"
                 android:textSize="14sp"
                 android:textAlignment="center"

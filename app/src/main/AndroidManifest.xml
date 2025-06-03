@@ -8,8 +8,12 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"/>
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,6 +28,12 @@
         android:theme="@style/Theme.PetCare"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".EditarAlergias"
+            android:exported="false" />
+        <activity
+            android:name=".EscanearCodigo"
+            android:exported="false" />
         <activity
             android:name=".VistaVeterinarioEnMascotas"
             android:exported="false" />
@@ -43,12 +53,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="petcare" />
+
+                <data
+                    android:host="veterinario"
+                    android:pathPrefix="/mascota/"
+                    android:scheme="petcare" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".InformacionDeMascota"
             android:exported="false" />

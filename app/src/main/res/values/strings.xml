@@ -2,10 +2,16 @@
     <string name="app_name">PetCare</string>
 
     <string-array name="sexo_options">
+        <item>Desconocido</item>
         <item>Macho</item>
         <item>Hembra</item>
     </string-array>
 
+    <string-array name="severidad_alergias">
+        <item>leve</item>
+        <item>moderada</item>
+        <item>grave</item>
+    </string-array>
 
     <string name="url_servidor">http://192.168.0.192:8080</string>
 </resources>

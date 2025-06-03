@@ -29,9 +29,9 @@
             android:iconTint="@color/blanco" />
 
         <item
-            android:id="@+id/navMenuAgendar"
-            android:icon="@drawable/icon_menu_agendar"
-            android:title="Agendar Cita"
+            android:id="@+id/navMenuEscanearCodigo"
+            android:icon="@drawable/icon_escanear_codigo"
+            android:title="Escanear Codigo"
             android:iconTint="@color/blanco"/>
     </group>
 </menu>

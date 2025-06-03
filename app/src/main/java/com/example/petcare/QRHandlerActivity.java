@@ -1,33 +1,47 @@
 package com.example.petcare;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class QRHandlerActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Obtener datos del intent
-        Uri data = getIntent().getData();
-        if (data != null && "petcare".equals(data.getScheme())) {
-            String path = data.getPath();
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+
+        // Obtener el ID del usuario que está escaneando (de SharedPreferences, SessionManager, etc.)
+        int idUsuario = obtenerIdUsuario(); // Implementa este método según tu lógica de autenticación
+
+        if (data != null) {
+            String path = data.getPath(); // Ejemplo: "/mascota/3"
             if (path != null && path.startsWith("/mascota/")) {
                 String mascotaId = path.replace("/mascota/", "");
-
-                Intent intent = new Intent(this, VistaVeterinarioEnMascotas.class);
-                intent.putExtra("id_mascota", mascotaId);
-                startActivity(intent);
+                redirectToVeterinarioMascota(mascotaId, idUsuario);
+            } else {
                 finish();
-                return;
             }
+        } else {
+            finish();
         }
+    }
 
-        // Si no es un QR válido
-        Toast.makeText(this, "QR no válido", Toast.LENGTH_SHORT).show();
+    private int obtenerIdUsuario() {
+        // Ejemplo con SharedPreferences:
+        SharedPreferences prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE);
+        return prefs.getInt("id_usuario", 0); // 0 si no existe
+    }
+
+    private void redirectToVeterinarioMascota(String mascotaId, int idUsuario) {
+        Intent vistaIntent = new Intent(this, VistaVeterinarioEnMascotas.class);
+        vistaIntent.putExtra("id_mascota", mascotaId);
+        vistaIntent.putExtra("id_usuario", idUsuario); // Pasamos el ID del usuario
+        startActivity(vistaIntent);
+        finish();
     }
 }

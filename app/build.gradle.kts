@@ -41,4 +41,17 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation (libs.core)
+    implementation (libs.zxing.android.embedded)
+    implementation (libs.appcompat.v161)
+    implementation (libs.core.ktx)
+    implementation (libs.camera.core)
+    implementation (libs.camera.camera2)
+    implementation (libs.camera.lifecycle)
+    implementation (libs.camera.view)
+
+    // ML Kit Barcode Scanning
+    implementation (libs.barcode.scanning)
+    implementation (libs.volley)
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
 }

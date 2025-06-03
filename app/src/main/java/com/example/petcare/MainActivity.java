@@ -44,9 +44,8 @@
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             adapter = new MascotasAdapter(mascotasList, this);
             recyclerView.setAdapter(adapter);
-    
-            new ObtenerAnimalesTask().execute();
-            startActivity(new Intent(MainActivity.this, Registro.class));
+
+            startActivity(new Intent(MainActivity.this, InicioDeSesion.class));
             finish();
         }
     

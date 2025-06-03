@@ -178,20 +178,12 @@
                     android:layout_marginTop="16dp">
 
                     <Button
-                        android:id="@+id/btnGenerarPDF"
+                        android:id="@+id/btnGenerarFicha"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Generar PDF"
+                        android:text="Generar Ficha"
                         android:layout_marginEnd="8dp"/>
-
-                    <Button
-                        android:id="@+id/btnCompartirPDF"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Compartir PDF"
-                        android:enabled="false"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

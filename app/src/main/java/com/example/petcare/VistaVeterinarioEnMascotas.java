@@ -1,119 +1,243 @@
 package com.example.petcare;
 
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class VistaVeterinarioEnMascotas extends AppCompatActivity {
 
-    private String mascotaId;
-    private TextView txtNombre, txtEspecie, txtRaza, txtEdad, txtHistorial;
+    private String idMascota, idUsuario;
+    private RequestQueue requestQueue;
+
+    // Views
+    private TextView textViewNombreMascota, textViewEspecie, textViewRaza, textViewEdad, textViewSexo, textViewPeso;
+    private ImageView imageViewFotoMascota;
+    private RecyclerView recyclerViewHistorialMedico;
+    private TextView textViewSinHistorial;
+
+    // Adaptador
+    private HistorialMedicoAdapter historialMedicoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vista_veterinario_en_mascotas);
 
-        mascotaId = getIntent().getStringExtra("id_mascota");
-        //  initViews();
+        // Inicializar Volley
+        requestQueue = Volley.newRequestQueue(this);
 
-        if (mascotaId != null) {
-            new ObtenerInfoMascotaVeterinarioTask().execute(mascotaId);
+        // Obtener IDs del Intent
+        idMascota = getIntent().getStringExtra("id_mascota");
+        idUsuario = getIntent().getStringExtra("id_usuario");
+
+        // Inicializar vistas
+        initViews();
+
+        // Configurar RecyclerView
+        setupRecycler();
+
+        // Cargar datos de la mascota
+        if (idMascota != null && idUsuario != null) {
+            cargarDatosMascota();
+            cargarHistorialMedico();
         } else {
-            Toast.makeText(this, "ID de mascota no válido", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: Datos faltantes", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        // Configurar listeners de botones
+        setupButtonListeners();
     }
 
-    //private void initViews() {
-    //    txtNombre = findViewById(R.id.txtNombre);
-    //    txtEspecie = findViewById(R.id.txtEspecie);
-    //    txtRaza = findViewById(R.id.txtRaza);
-    //    txtEdad = findViewById(R.id.txtEdad);
-    //    txtHistorial = findViewById(R.id.txtHistorial);
-    //}
+    private void initViews() {
+        textViewNombreMascota = findViewById(R.id.textViewNombreMascota);
+        textViewEspecie = findViewById(R.id.textViewEspecie);
+        textViewRaza = findViewById(R.id.textViewRaza);
+        textViewEdad = findViewById(R.id.textViewEdad);
+        textViewSexo = findViewById(R.id.textViewSexo);
+        textViewPeso = findViewById(R.id.textViewPeso);
+        imageViewFotoMascota = findViewById(R.id.imageViewFotoMascota);
 
-    private class ObtenerInfoMascotaVeterinarioTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String idMascota = params[0];
-            String urlServer = getString(R.string.url_servidor) + "/miapp/obtener_info_veterinario_mascota.php?id_mascota=" + idMascota;
+        recyclerViewHistorialMedico = findViewById(R.id.recyclerViewHistorialMedico);
+        textViewSinHistorial = findViewById(R.id.textViewSinHistorial);
+    }
 
-            try {
-                URL url = new URL(urlServer);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(10000);
-                connection.connect();
+    private void setupRecycler() {
+        // Configurar RecyclerView para historial médico
+        recyclerViewHistorialMedico.setLayoutManager(new LinearLayoutManager(this));
+        historialMedicoAdapter = new HistorialMedicoAdapter(new ArrayList<>());
+        recyclerViewHistorialMedico.setAdapter(historialMedicoAdapter);
+    }
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode != HttpURLConnection.HTTP_OK) {
-                    return "Error: " + responseCode;
-                }
+    private void setupButtonListeners() {
+        // Botón para agregar historial médico
+        findViewById(R.id.cardViewAgregarHistorial).setOnClickListener(v -> {
+            // Implementar lógica para agregar historial médico
+        });
 
-                InputStream inputStream = connection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder response = new StringBuilder();
-                String line;
+        // Botones de edición avanzada
+        findViewById(R.id.buttonEditarVacunas).setOnClickListener(v -> {
+            // Implementar lógica para editar vacunas
+        });
 
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
+        findViewById(R.id.buttonEditarAlergias).setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditarAlergias.class);
+            intent.putExtra("id_mascota", idMascota);
+            startActivity(intent);
+        });
 
-                reader.close();
-                inputStream.close();
-                return response.toString();
-            } catch (Exception e) {
-                Log.e("VeterinarioMascota", "Error: " + e.getMessage());
-                return null;
+        findViewById(R.id.buttonEditarMedicamentos).setOnClickListener(v -> {
+            // Implementar lógica para editar medicamentos
+        });
+
+        // Botón para editar información completa
+        findViewById(R.id.buttonEditarInformacionCompleta).setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditarMascota.class);
+            intent.putExtra("id_mascota", idMascota);
+            startActivity(intent);
+        });
+
+        // Botón para cambiar foto
+        findViewById(R.id.buttonCambiarFoto).setOnClickListener(v -> {
+            // Implementar lógica para cambiar foto
+        });
+    }
+
+    private void cargarDatosMascota() {
+        String url = getString(R.string.url_servidor) + "/miapp/obtener_mascota_veterinario.php?id_mascota=" + idMascota;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        // Actualizar UI con datos de la mascota
+                        textViewNombreMascota.setText(response.getString("nombre"));
+                        textViewEspecie.setText(response.getString("especie"));
+                        textViewRaza.setText(response.optString("raza", "Desconocida"));
+                        textViewEdad.setText(response.optString("edad", "Desconocida") + " años");
+                        textViewSexo.setText(response.getString("sexo"));
+                        textViewPeso.setText(response.optString("peso", "Desconocido") + " kg");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Error al cargar datos de la mascota", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + obtenerToken());
+                return headers;
             }
-        }
+        };
 
-        @Override
-        protected void onPostExecute(String result) {
-            if (result == null) {
-                Toast.makeText(VistaVeterinarioEnMascotas.this, "Error al cargar los datos", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
+        requestQueue.add(request);
+    }
+
+    private void cargarHistorialMedico() {
+        String url = getString(R.string.url_servidor) + "/miapp/historial_medico.php?id_mascota=" + idMascota;
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        List<HistorialMedico> historiales = new ArrayList<>();
+
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject item = response.getJSONObject(i);
+                            HistorialMedico historial = new HistorialMedico(
+                                    item.getString("fecha_consulta"),
+                                    item.getString("diagnostico"),
+                                    item.optString("tratamiento", ""),
+                                    item.optString("observaciones", ""),
+                                    item.optDouble("peso_actual", 0)
+                            );
+                            historiales.add(historial);
+                        }
+
+                        if (historiales.isEmpty()) {
+                            textViewSinHistorial.setVisibility(View.VISIBLE);
+                            recyclerViewHistorialMedico.setVisibility(View.GONE);
+                        } else {
+                            textViewSinHistorial.setVisibility(View.GONE);
+                            recyclerViewHistorialMedico.setVisibility(View.VISIBLE);
+                            historialMedicoAdapter.actualizarDatos(historiales);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error al procesar el historial", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Error al cargar historial médico", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + obtenerToken());
+                return headers;
             }
+        };
 
-            try {
-                JSONObject mascota = new JSONObject(result);
+        requestQueue.add(request);
+    }
 
-                if (mascota.has("error")) {
-                    Toast.makeText(VistaVeterinarioEnMascotas.this, mascota.getString("error"), Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
-                }
+    private String obtenerToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("PetCarePrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("token", "");
+    }
 
-                txtNombre.setText(mascota.getString("nombre"));
-                txtEspecie.setText("Especie: " + mascota.getString("especie"));
-                txtRaza.setText("Raza: " + mascota.getString("raza"));
-                txtEdad.setText("Edad: " + mascota.getString("edad") + " años");
-                txtHistorial.setText("Historial Médico:\n" + mascota.optString("historial", "No hay historial registrado"));
-
-            } catch (JSONException e) {
-                Log.e("VeterinarioMascota", "Error parsing JSON: " + e.getMessage());
-                Toast.makeText(VistaVeterinarioEnMascotas.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refrescar datos cuando la actividad se reanuda
+        if (idMascota != null && idUsuario != null) {
+            cargarDatosMascota();
+            cargarHistorialMedico();
         }
     }
+}
+
+// Clase modelo para el historial médico
+class HistorialMedico {
+    private String fechaConsulta, diagnostico, tratamiento, observaciones;
+    private double pesoActual;
+
+    public HistorialMedico(String fechaConsulta, String diagnostico, String tratamiento,
+                           String observaciones, double pesoActual) {
+        this.fechaConsulta = fechaConsulta;
+        this.diagnostico = diagnostico;
+        this.tratamiento = tratamiento;
+        this.observaciones = observaciones;
+        this.pesoActual = pesoActual;
+    }
+
+    // Getters
+    public String getFechaConsulta() { return fechaConsulta; }
+    public String getDiagnostico() { return diagnostico; }
+    public String getTratamiento() { return tratamiento; }
+    public String getObservaciones() { return observaciones; }
+    public double getPesoActual() { return pesoActual; }
 }

@@ -90,8 +90,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             }
         } else if (id == R.id.navMenuHistorial) {
 
-        } else if (id == R.id.navMenuAgendar) {
-
+        } else if (id == R.id.navMenuEscanearCodigo) {
+            if (!getClass().equals(EscanearCodigo.class)) {
+                startActivity(new Intent(this, EscanearCodigo.class));
+                finish();
+            }
         } else if (id == R.id.navMenuCitas) {
 
         }

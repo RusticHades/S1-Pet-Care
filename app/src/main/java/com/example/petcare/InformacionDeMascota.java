@@ -1,16 +1,24 @@
 package com.example.petcare;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +26,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +52,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,6 +61,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -81,7 +90,7 @@ public class InformacionDeMascota extends AppCompatActivity {
 
         initViews();
 
-        btnGenerarFicha = findViewById(R.id.btnGenerarPDF);
+        btnGenerarFicha = findViewById(R.id.btnGenerarFicha);
         btnGenerarFicha.setOnClickListener(v -> generarFichaMascota());
 
         mascotaId = getIntent().getStringExtra("id_mascota");
@@ -116,53 +125,109 @@ public class InformacionDeMascota extends AppCompatActivity {
 
         executor.execute(() -> {
             try {
-                // Crear un bitmap para la ficha
-                Bitmap fichaBitmap = Bitmap.createBitmap(IMAGE_WIDTH, IMAGE_HEIGHT, Bitmap.Config.ARGB_8888);
+                // Tamaño A4 en pixels (842x1190 a 72dpi)
+                int width = 842;
+                int height = 1190;
+                Bitmap fichaBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(fichaBitmap);
 
-                // Pintar fondo blanco
-                canvas.drawColor(Color.WHITE);
+                // Fondo con tu color
+                Paint bgPaint = new Paint();
+                bgPaint.setColor(ContextCompat.getColor(this, R.color.colorFondo));
+                canvas.drawRect(0, 0, width, height, bgPaint);
+
+                // Encabezado con tu color principal
+                Paint headerPaint = new Paint();
+                headerPaint.setColor(ContextCompat.getColor(this, R.color.colorPrincipal));
+                canvas.drawRect(0, 0, width, 150, headerPaint);
+
+                // Logo o título
+                Paint titlePaint = new Paint();
+                titlePaint.setColor(Color.WHITE);
+                titlePaint.setTextSize(48);
+                titlePaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                titlePaint.setTextAlign(Paint.Align.CENTER);
+                canvas.drawText("PETCARE - CARNET DE MASCOTA", width/2, 100, titlePaint);
 
                 // Configurar pintura para el texto
-                Paint paint = new Paint();
-                paint.setColor(Color.BLACK);
-                paint.setTextSize(40);
-                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                Paint textPaint = new Paint();
+                textPaint.setColor(Color.BLACK);
+                textPaint.setTextSize(32);
+                textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
 
-                // Título
-                canvas.drawText("Ficha Médica de Mascota", 50, 80, paint);
+                // Marco para la foto con tu color secundario
+                Paint framePaint = new Paint();
+                framePaint.setColor(ContextCompat.getColor(this, R.color.colorSecundario));
+                framePaint.setStyle(Paint.Style.STROKE);
+                framePaint.setStrokeWidth(5);
 
-                // Datos de la mascota
-                paint.setTextSize(30);
-                paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+                // Variables para posicionamiento dinámico
+                int yPos = 200; // Posición Y inicial después del encabezado
+                int leftMargin = 50;
+                int rightColumn = width/2 + 50;
+                int lineHeight = 40; // Altura base por línea
+                int sectionSpacing = 20; // Espacio entre secciones
 
-                int yPos = 150;
-                canvas.drawText("Nombre: " + mascotaNombre, 50, yPos, paint); yPos += 50;
-                canvas.drawText("Especie: " + mascotaEspecie, 50, yPos, paint); yPos += 50;
-                canvas.drawText("Raza: " + mascotaRaza, 50, yPos, paint); yPos += 50;
-                canvas.drawText("Edad: " + mascotaEdad + " años", 50, yPos, paint); yPos += 50;
-                canvas.drawText("Sexo: " + mascotaSexo, 50, yPos, paint); yPos += 50;
-                canvas.drawText("Peso: " + mascotaPeso + " kg", 50, yPos, paint); yPos += 50;
-                canvas.drawText("Esterilizado: " + mascotaEsterilizado, 50, yPos, paint); yPos += 50;
-                canvas.drawText("Fecha Nacimiento: " + mascotaNacimiento, 50, yPos, paint); yPos += 80;
+                // Datos de la mascota en dos columnas
+                // Columna izquierda
+                canvas.drawText("Nombre:", leftMargin, yPos, textPaint);
+                canvas.drawText(mascotaNombre, leftMargin + 150, yPos, textPaint);
 
-                // Agregar imagen de la mascota si está disponible
-                if (mascotaBitmap != null) {
-                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(mascotaBitmap, 300, 300, true);
-                    canvas.drawBitmap(scaledBitmap, 50, yPos, null);
-                    yPos += 350;
+                canvas.drawText("Raza:", leftMargin, yPos + lineHeight, textPaint);
+                canvas.drawText(mascotaRaza, leftMargin + 150, yPos + lineHeight, textPaint);
+
+                canvas.drawText("Sexo:", leftMargin, yPos + (lineHeight * 2), textPaint);
+                canvas.drawText(mascotaSexo, leftMargin + 150, yPos + (lineHeight * 2), textPaint);
+
+                String[] esterilizadoLines = dividirTexto("Esterilizado: " + mascotaEsterilizado, 20);
+                for (int i = 0; i < esterilizadoLines.length; i++) {
+                    canvas.drawText(esterilizadoLines[i], leftMargin, yPos + (lineHeight * 3) + (i * lineHeight), textPaint);
                 }
 
-                // Agregar código QR
-                Bitmap qrBitmap = generarQRCode("petcare://mascota/" + mascotaId, 300);
+                // Columna derecha
+                canvas.drawText("Especie:", rightColumn, yPos, textPaint);
+                canvas.drawText(mascotaEspecie, rightColumn + 150, yPos, textPaint);
+
+                canvas.drawText("Edad:", rightColumn, yPos + lineHeight, textPaint);
+                canvas.drawText(mascotaEdad, rightColumn + 150, yPos + lineHeight, textPaint);
+
+                canvas.drawText("Peso:", rightColumn, yPos + (lineHeight * 2), textPaint);
+                canvas.drawText(mascotaPeso, rightColumn + 150, yPos + (lineHeight * 2), textPaint);
+
+                String[] nacimientoLines = dividirTexto("Nacimiento: " + mascotaNacimiento, 20);
+                for (int i = 0; i < nacimientoLines.length; i++) {
+                    canvas.drawText(nacimientoLines[i], rightColumn, yPos + (lineHeight * 3) + (i * lineHeight), textPaint);
+                }
+
+                // Ajustar posición Y para la siguiente sección (foto + QR)
+                yPos += (lineHeight * 4) + sectionSpacing;
+
+                // Agregar imagen de la mascota
+                if (mascotaBitmap != null) {
+                    int photoSize = 300;
+                    Bitmap circularBitmap = getCircularBitmap(
+                            Bitmap.createScaledBitmap(mascotaBitmap, photoSize, photoSize, true)
+                    );
+                    canvas.drawBitmap(circularBitmap, leftMargin, yPos, null);
+                    canvas.drawCircle(leftMargin + photoSize/2, yPos + photoSize/2, photoSize/2 + 5, framePaint);
+                }
+
+                // Agregar código QR con marco
+                Bitmap qrBitmap = generarQRCode("petcare://veterinario/mascota/" + mascotaId, 250);
                 if (qrBitmap != null) {
-                    canvas.drawBitmap(qrBitmap, IMAGE_WIDTH - 350, yPos - 350, null);
+                    canvas.drawBitmap(qrBitmap, rightColumn, yPos, null);
+                    canvas.drawRect(rightColumn - 5, yPos - 5, rightColumn + qrBitmap.getWidth() + 5,
+                            yPos + qrBitmap.getHeight() + 5, framePaint);
                 }
 
                 // Pie de página
-                paint.setTextSize(20);
-                canvas.drawText("Generado el " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()),
-                        50, IMAGE_HEIGHT - 50, paint);
+                Paint footerPaint = new Paint();
+                footerPaint.setColor(Color.DKGRAY);
+                footerPaint.setTextSize(20);
+                footerPaint.setTextAlign(Paint.Align.CENTER);
+                String footerText = "Generado el " + new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date()) +
+                        " - PetCare © 2023";
+                canvas.drawText(footerText, width/2, height - 30, footerPaint);
 
                 Bitmap finalFichaBitmap = fichaBitmap;
                 handler.post(() -> {
@@ -180,10 +245,25 @@ public class InformacionDeMascota extends AppCompatActivity {
             }
         });
     }
+    private String[] dividirTexto(String texto, int maxChars) {
+        if (texto.length() <= maxChars) {
+            return new String[]{texto};
+        }
+
+        ArrayList<String> lines = new ArrayList<>();
+        int start = 0;
+        while (start < texto.length()) {
+            int end = Math.min(start + maxChars, texto.length());
+            lines.add(texto.substring(start, end));
+            start = end;
+        }
+
+        return lines.toArray(new String[0]);
+    }
 
     private void mostrarFichaEnDialogo(Bitmap fichaBitmap) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Ficha de " + mascotaNombre);
+        builder.setTitle("Carnet de " + mascotaNombre);
 
         ImageView imageView = new ImageView(this);
         imageView.setImageBitmap(fichaBitmap);
@@ -210,91 +290,221 @@ public class InformacionDeMascota extends AppCompatActivity {
             dialog.getWindow().setLayout(width, height);
         });
     }
+    private Bitmap getCircularBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
 
-    private void compartirFicha(Bitmap fichaBitmap) {
-        try {
-            File cacheFile = guardarImagenEnCache(fichaBitmap, "ficha_compartir.png");
-            Uri contentUri = FileProvider.getUriForFile(this,
-                    getPackageName() + ".provider", cacheFile);
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/png");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(Intent.createChooser(shareIntent, "Compartir ficha"));
-        } catch (Exception e) {
-            Toast.makeText(this, "Error al compartir: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawCircle(bitmap.getWidth() / 2f, bitmap.getHeight() / 2f, bitmap.getWidth() / 2f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
     }
 
-    private void guardarFicha(Bitmap fichaBitmap) {
-        if (!tienePermisosAlmacenamiento()) {
-            solicitarPermisosAlmacenamiento();
-            return;
-        }
+    private void compartirFicha(Bitmap fichaBitmap) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Preparando para compartir...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
             try {
-                File file = crearArchivoFicha();
+                // Crear un archivo temporal en el directorio de caché externo
+                File cachePath = new File(getExternalCacheDir(), "shared_images");
+                if (!cachePath.exists()) {
+                    cachePath.mkdirs();
+                }
+
+                String fileName = "ficha_" + System.currentTimeMillis() + ".png";
+                File file = new File(cachePath, fileName);
 
                 try (FileOutputStream out = new FileOutputStream(file)) {
                     fichaBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
                 }
 
-                // Notificar a la galería
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                mediaScanIntent.setData(Uri.fromFile(file));
-                sendBroadcast(mediaScanIntent);
+                Uri contentUri = FileProvider.getUriForFile(
+                        InformacionDeMascota.this,
+                        getPackageName() + ".provider",
+                        file);
 
                 handler.post(() -> {
-                    Toast.makeText(this,
-                            "Ficha guardada en: " + file.getAbsolutePath(),
-                            Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("image/png");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    try {
+                        startActivity(Intent.createChooser(shareIntent, "Compartir ficha de mascota"));
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(InformacionDeMascota.this,
+                                "No hay aplicaciones disponibles para compartir",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 });
             } catch (Exception e) {
                 handler.post(() -> {
-                    Toast.makeText(this,
-                            "Error al guardar: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(InformacionDeMascota.this,
+                            "Error al compartir: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    Log.e("CompartirFicha", "Error", e);
                 });
             }
         });
     }
 
-    private File guardarImagenEnCache(Bitmap bitmap, String nombreArchivo) throws IOException {
-        File cacheDir = getCacheDir();
-        File cacheFile = new File(cacheDir, nombreArchivo);
-
-        try (FileOutputStream out = new FileOutputStream(cacheFile)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+    private void guardarFicha(Bitmap fichaBitmap) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || tienePermisosAlmacenamiento()) {
+            guardarFichaEnDescargas(fichaBitmap);
+        } else {
+            solicitarPermisosAlmacenamiento();
         }
-
-        return cacheFile;
     }
 
-    private File crearArchivoFicha() throws IOException {
-        File storageDir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        } else {
-            storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        }
+    private void guardarFichaEnDescargas(Bitmap fichaBitmap) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Guardando ficha...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-        if (!storageDir.exists() && !storageDir.mkdirs()) {
-            throw new IOException("No se pudo crear el directorio");
-        }
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
-        String fileName = "Ficha_" + mascotaNombre.replaceAll("[^a-zA-Z0-9_]", "_") + ".png";
-        return new File(storageDir, fileName);
+        executor.execute(() -> {
+            try {
+                // Nombre del archivo
+                String fileName = "Carnet_" + mascotaNombre.replaceAll("[^a-zA-Z0-9]", "_") +
+                        "_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".png";
+
+                File file;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ContentResolver resolver = getContentResolver();
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+                    contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/PetCare");
+
+                    Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+
+                    if (imageUri == null) {
+                        throw new IOException("No se pudo crear el archivo en Documents/PetCare");
+                    }
+
+                    try (OutputStream out = resolver.openOutputStream(imageUri)) {
+                        if (!fichaBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                            throw new IOException("No se pudo guardar el bitmap");
+                        }
+                    }
+
+                    file = new File(getPathFromUri(imageUri));
+                } else {
+                    File documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                    File petcareDir = new File(documentsDir, "PetCare");
+
+                    if (!petcareDir.exists()) {
+                        if (!petcareDir.mkdirs()) {
+                            throw new IOException("No se pudo crear el directorio PetCare en Documents");
+                        }
+                    }
+
+                    file = new File(petcareDir, fileName);
+
+                    try (FileOutputStream out = new FileOutputStream(file)) {
+                        if (!fichaBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                            throw new IOException("No se pudo guardar el bitmap");
+                        }
+                        out.flush();
+                    }
+
+                    // Notificar al sistema del nuevo archivo
+                    MediaScannerConnection.scanFile(this,
+                            new String[]{file.getAbsolutePath()},
+                            new String[]{"image/png"},
+                            null);
+                }
+
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Ficha guardada", Toast.LENGTH_LONG).show();
+                    abrirArchivoGuardado(file);
+                });
+            } catch (Exception e) {
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Error al guardar en descargas, se intentara en cache ", Toast.LENGTH_LONG).show();
+                    Log.e("GuardarFicha", "Error", e);
+
+                    // Intentar guardar en caché como último recurso
+                    guardarEnCacheComoUltimoRecurso(fichaBitmap);
+                });
+            }
+        });
+    }
+
+    @SuppressLint("Range")
+    private String getPathFromUri(Uri uri) {
+        String path = null;
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path != null ? path : uri.getPath();
+    }
+
+    private void guardarEnCacheComoUltimoRecurso(Bitmap fichaBitmap) {
+        try {
+            File cacheDir = getExternalCacheDir();
+            String fileName = "Carnet_" + mascotaNombre.replaceAll("[^a-zA-Z0-9]", "_") +
+                    "_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".png";
+
+            File file = new File(cacheDir, fileName);
+
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                fichaBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+            }
+
+            Toast.makeText(this, "Ficha guardada en caché", Toast.LENGTH_LONG).show();
+            abrirArchivoGuardado(file);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error al guardar incluso en caché: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("GuardarCache", "Error", e);
+        }
+    }
+
+    private void abrirArchivoGuardado(File file) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", file);
+            intent.setDataAndType(uri, "image/png");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No hay aplicación para ver la imagen", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean tienePermisosAlmacenamiento() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return true;
+        }
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     private void solicitarPermisosAlmacenamiento() {
@@ -408,16 +618,16 @@ public class InformacionDeMascota extends AppCompatActivity {
 
                 txtNombre.setText(mascotaNombre);
                 txtEspecieRaza.setText(mascotaEspecie + " - " + mascotaRaza);
-                txtEdad.setText(mascotaEdad + " años");
-                txtSexo.setText(mascotaSexo);
-                txtPeso.setText(mascotaPeso + " kg");
-                txtEsterilizado.setText(mascotaEsterilizado);
+                txtEdad.setText("Edad: "+mascotaEdad);
+                txtSexo.setText("Sexo: "+mascotaSexo);
+                txtPeso.setText("Peso: "+mascotaPeso);
+                txtEsterilizado.setText("Esterilizado: "+mascotaEsterilizado);
                 txtFechaNacimiento.setText(mascotaNacimiento);
 
                 cargarImagenMascota(mascota.optString("foto_mascota", ""));
 
                 // Generar QR para redirección
-                String qrContent = "petcare://mascota/" + mascotaId;
+                String qrContent = "petcare://veterinario/mascota/" + mascotaId;
                 Bitmap qrBitmap = generarQRCode(qrContent, 400);
                 if (qrBitmap != null) {
                     imgQR.setImageBitmap(qrBitmap);
@@ -433,6 +643,7 @@ public class InformacionDeMascota extends AppCompatActivity {
     private void cargarImagenMascota(String fotoMascota) {
         if (fotoMascota.isEmpty()) {
             imgMascota.setImageResource(R.drawable.foto_perfil_mascota);
+            mascotaBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.foto_perfil_mascota);
             return;
         }
 
@@ -441,10 +652,11 @@ public class InformacionDeMascota extends AppCompatActivity {
         } else {
             try {
                 byte[] decodedString = Base64.decode(fotoMascota, Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                imgMascota.setImageBitmap(decodedByte);
+                mascotaBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                imgMascota.setImageBitmap(mascotaBitmap);
             } catch (Exception e) {
                 imgMascota.setImageResource(R.drawable.foto_perfil_mascota);
+                mascotaBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.foto_perfil_mascota);
             }
         }
     }
