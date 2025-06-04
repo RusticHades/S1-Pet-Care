@@ -3,50 +3,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="16dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="12dp">
 
-        <!-- Indicator de severidad -->
-        <View
-            android:id="@+id/severidadIndicator"
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Contenedor de texto -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnEliminar"
-            app:layout_constraintStart_toEndOf="@+id/severidadIndicator"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/textAlergia"
+                android:id="@+id/textNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="Alergia"
                 android:textColor="@color/colorSpam"
                 android:fontFamily="@font/nunito_black"/>
 
             <TextView
-                android:id="@+id/textSeveridad"
-                android:text="Severidad"
+                android:id="@+id/textDosis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"/>
+
+            <TextView
+                android:id="@+id/textFrecuencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"/>
+
+            <TextView
+                android:id="@+id/textMotivo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"/>
+
+            <TextView
+                android:id="@+id/textFechaInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/nunito_regular"/>
+
+            <TextView
+                android:id="@+id/textFechaFin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -54,7 +67,6 @@
 
             <TextView
                 android:id="@+id/textNotas"
-                android:text="Notas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -62,7 +74,6 @@
                 android:fontFamily="@font/nunito_regular"/>
         </LinearLayout>
 
-        <!-- Botón de eliminar - ahora centrado verticalmente -->
         <ImageButton
             android:id="@+id/btnEliminar"
             android:layout_width="48dp"

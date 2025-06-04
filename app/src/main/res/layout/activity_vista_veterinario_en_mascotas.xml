@@ -48,15 +48,6 @@
                     android:src="@drawable/foto_perfil_mascota"/>
 
                 <!-- Botón para cambiar foto -->
-                <Button
-                    android:id="@+id/buttonCambiarFoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Cambiar Foto"
-                    android:textColor="@color/colorPrincipal"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <View
                     android:layout_width="match_parent"

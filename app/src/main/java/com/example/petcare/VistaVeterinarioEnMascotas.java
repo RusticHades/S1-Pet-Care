@@ -30,7 +30,6 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
 
     // Views
     private TextView textViewNombreMascota, textViewEspecie, textViewRaza, textViewEdad, textViewSexo, textViewPeso;
-    private ImageView imageViewFotoMascota;
     private RecyclerView recyclerViewHistorialMedico;
     private TextView textViewSinHistorial;
 
@@ -75,7 +74,6 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
         textViewEdad = findViewById(R.id.textViewEdad);
         textViewSexo = findViewById(R.id.textViewSexo);
         textViewPeso = findViewById(R.id.textViewPeso);
-        imageViewFotoMascota = findViewById(R.id.imageViewFotoMascota);
 
         recyclerViewHistorialMedico = findViewById(R.id.recyclerViewHistorialMedico);
         textViewSinHistorial = findViewById(R.id.textViewSinHistorial);
@@ -89,14 +87,14 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
     }
 
     private void setupButtonListeners() {
-        // Botón para agregar historial médico
         findViewById(R.id.cardViewAgregarHistorial).setOnClickListener(v -> {
             // Implementar lógica para agregar historial médico
         });
 
-        // Botones de edición avanzada
         findViewById(R.id.buttonEditarVacunas).setOnClickListener(v -> {
-            // Implementar lógica para editar vacunas
+            Intent intent = new Intent(this, EditarVacunas.class);
+            intent.putExtra("id_mascota", idMascota);
+            startActivity(intent);
         });
 
         findViewById(R.id.buttonEditarAlergias).setOnClickListener(v -> {
@@ -106,19 +104,15 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
         });
 
         findViewById(R.id.buttonEditarMedicamentos).setOnClickListener(v -> {
-            // Implementar lógica para editar medicamentos
-        });
-
-        // Botón para editar información completa
-        findViewById(R.id.buttonEditarInformacionCompleta).setOnClickListener(v -> {
-            Intent intent = new Intent(this, EditarMascota.class);
+            Intent intent = new Intent(this, EditarMedicamentos.class);
             intent.putExtra("id_mascota", idMascota);
             startActivity(intent);
         });
 
-        // Botón para cambiar foto
-        findViewById(R.id.buttonCambiarFoto).setOnClickListener(v -> {
-            // Implementar lógica para cambiar foto
+        findViewById(R.id.buttonEditarInformacionCompleta).setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditarMascota.class);
+            intent.putExtra("id_mascota", idMascota);
+            startActivity(intent);
         });
     }
 
@@ -132,9 +126,9 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
                         textViewNombreMascota.setText(response.getString("nombre"));
                         textViewEspecie.setText(response.getString("especie"));
                         textViewRaza.setText(response.optString("raza", "Desconocida"));
-                        textViewEdad.setText(response.optString("edad", "Desconocida") + " años");
+                        textViewEdad.setText(response.optString("edad", "Desconocida"));
                         textViewSexo.setText(response.getString("sexo"));
-                        textViewPeso.setText(response.optString("peso", "Desconocido") + " kg");
+                        textViewPeso.setText(response.optString("peso", "Desconocido"));
 
                     } catch (JSONException e) {
                         e.printStackTrace();

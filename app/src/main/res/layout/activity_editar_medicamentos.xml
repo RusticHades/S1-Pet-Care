@@ -7,12 +7,11 @@
     android:padding="16dp"
     android:background="@color/colorFondo">
 
-    <!-- Título -->
     <TextView
-        android:id="@+id/titleAlergias"
+        android:id="@+id/titleMedicamentos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Alergias de la mascota"
+        android:text="Medicamentos de la mascota"
         android:textColor="@color/colorSpam"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -21,26 +20,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView para la lista de alergias -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAlergias"
+        android:id="@+id/recyclerViewMedicamentos"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAgregarAlergia"
+        app:layout_constraintBottom_toTopOf="@+id/btnAgregarMedicamento"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleAlergias" />
+        app:layout_constraintTop_toBottomOf="@+id/titleMedicamentos" />
 
-    <!-- Botón Agregar Alergia -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAgregarAlergia"
+        android:id="@+id/btnAgregarMedicamento"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Agregar Alergia"
+        android:text="Agregar Medicamento"
         android:textAllCaps="false"
         android:textColor="@color/blanco"
         android:fontFamily="@font/nunito_bold"
@@ -51,7 +48,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Botón Guardar Cambios -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGuardarCambios"
         android:layout_width="0dp"
