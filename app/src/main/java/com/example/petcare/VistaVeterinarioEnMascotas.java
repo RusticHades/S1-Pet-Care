@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +31,10 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
     private RecyclerView recyclerViewHistorialMedico;
     private TextView textViewSinHistorial;
 
+    private HistorialMedicoAdapter historialAdapter;
+    private List<HistorialMedicoMascota> listaHistorial = new ArrayList<>();
+
     // Adaptador
-    private HistorialMedicoAdapter historialMedicoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +51,98 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
         // Inicializar vistas
         initViews();
 
-        // Configurar RecyclerView
-        setupRecycler();
+        configurarRecyclerView();
 
-        // Cargar datos de la mascota
+        // Cargar datos de la mascota y su historial
         if (idMascota != null && idUsuario != null) {
             cargarDatosMascota();
             cargarHistorialMedico();
-        } else {
-            Toast.makeText(this, "Error: Datos faltantes", Toast.LENGTH_SHORT).show();
-            finish();
+            setupButtonListeners();
         }
+    }
+    private void configurarRecyclerView() {
+        recyclerViewHistorialMedico.setLayoutManager(new LinearLayoutManager(this));
+        historialAdapter = new HistorialMedicoAdapter(listaHistorial, historial -> {
+            // Mostrar detalles completos del historial
+            Intent intent = new Intent(this, DetalleHistorial.class);
 
-        // Configurar listeners de botones
-        setupButtonListeners();
+            // Pasar cada dato individualmente
+            intent.putExtra("id_historial", historial.getIdHistorial());
+            intent.putExtra("fecha_consulta", historial.getFechaConsulta());
+            intent.putExtra("motivo_consulta", historial.getMotivoConsulta());
+            intent.putExtra("diagnostico", historial.getDiagnostico());
+            intent.putExtra("tratamiento", historial.getTratamiento());
+            intent.putExtra("observaciones", historial.getObservaciones());
+
+            // Pasar valores numéricos solo si no son null
+            if (historial.getPesoActual() != null) {
+                intent.putExtra("peso_actual", historial.getPesoActual());
+            }
+            if (historial.getTemperatura() != null) {
+                intent.putExtra("temperatura", historial.getTemperatura());
+            }
+
+            intent.putExtra("vacunas_aplicadas", historial.getVacunasAplicadas());
+
+            startActivity(intent);
+        });
+        recyclerViewHistorialMedico.setAdapter(historialAdapter);
+    }
+
+    private void cargarHistorialMedico() {
+        String url = getString(R.string.url_servidor) + "/miapp/obtener_historial_mascota.php?id_mascota=" + idMascota;
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        listaHistorial.clear();
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            HistorialMedicoMascota historial = new HistorialMedicoMascota(
+                                    jsonObject.getInt("id_historial"),
+                                    jsonObject.getString("fecha_consulta"),
+                                    jsonObject.getString("motivo_consulta"),
+                                    jsonObject.getString("diagnostico"),
+                                    jsonObject.optString("tratamiento", ""),
+                                    jsonObject.optString("observaciones", ""),
+                                    jsonObject.has("peso_actual") && !jsonObject.isNull("peso_actual")
+                                            ? jsonObject.getDouble("peso_actual") : null,
+                                    jsonObject.has("temperatura") && !jsonObject.isNull("temperatura")
+                                            ? jsonObject.getDouble("temperatura") : null,
+                                    jsonObject.optString("vacunas_aplicadas", "")
+                            );
+                            listaHistorial.add(historial);
+                        }
+
+                        historialAdapter.notifyDataSetChanged();
+
+                        // Mostrar u ocultar mensaje de "sin historial"
+                        if (listaHistorial.isEmpty()) {
+                            textViewSinHistorial.setVisibility(View.VISIBLE);
+                            recyclerViewHistorialMedico.setVisibility(View.GONE);
+                        } else {
+                            textViewSinHistorial.setVisibility(View.GONE);
+                            recyclerViewHistorialMedico.setVisibility(View.VISIBLE);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error al procesar el historial", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Error al cargar historial médico", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + obtenerToken());
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
     }
 
     private void initViews() {
@@ -79,16 +157,14 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
         textViewSinHistorial = findViewById(R.id.textViewSinHistorial);
     }
 
-    private void setupRecycler() {
-        // Configurar RecyclerView para historial médico
-        recyclerViewHistorialMedico.setLayoutManager(new LinearLayoutManager(this));
-        historialMedicoAdapter = new HistorialMedicoAdapter(new ArrayList<>());
-        recyclerViewHistorialMedico.setAdapter(historialMedicoAdapter);
-    }
+
 
     private void setupButtonListeners() {
         findViewById(R.id.cardViewAgregarHistorial).setOnClickListener(v -> {
-            // Implementar lógica para agregar historial médico
+            Intent intent = new Intent(this, AgregarHistorialMedico.class);
+            intent.putExtra("id_mascota", idMascota);
+            intent.putExtra("id_usuario", idUsuario);
+            startActivity(intent);
         });
 
         findViewById(R.id.buttonEditarVacunas).setOnClickListener(v -> {
@@ -150,88 +226,8 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    private void cargarHistorialMedico() {
-        String url = getString(R.string.url_servidor) + "/miapp/historial_medico.php?id_mascota=" + idMascota;
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        List<HistorialMedico> historiales = new ArrayList<>();
-
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject item = response.getJSONObject(i);
-                            HistorialMedico historial = new HistorialMedico(
-                                    item.getString("fecha_consulta"),
-                                    item.getString("diagnostico"),
-                                    item.optString("tratamiento", ""),
-                                    item.optString("observaciones", ""),
-                                    item.optDouble("peso_actual", 0)
-                            );
-                            historiales.add(historial);
-                        }
-
-                        if (historiales.isEmpty()) {
-                            textViewSinHistorial.setVisibility(View.VISIBLE);
-                            recyclerViewHistorialMedico.setVisibility(View.GONE);
-                        } else {
-                            textViewSinHistorial.setVisibility(View.GONE);
-                            recyclerViewHistorialMedico.setVisibility(View.VISIBLE);
-                            historialMedicoAdapter.actualizarDatos(historiales);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Error al procesar el historial", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    error.printStackTrace();
-                    Toast.makeText(this, "Error al cargar historial médico", Toast.LENGTH_SHORT).show();
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + obtenerToken());
-                return headers;
-            }
-        };
-
-        requestQueue.add(request);
-    }
-
     private String obtenerToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("PetCarePrefs", MODE_PRIVATE);
         return sharedPreferences.getString("token", "");
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Refrescar datos cuando la actividad se reanuda
-        if (idMascota != null && idUsuario != null) {
-            cargarDatosMascota();
-            cargarHistorialMedico();
-        }
-    }
-}
-
-// Clase modelo para el historial médico
-class HistorialMedico {
-    private String fechaConsulta, diagnostico, tratamiento, observaciones;
-    private double pesoActual;
-
-    public HistorialMedico(String fechaConsulta, String diagnostico, String tratamiento,
-                           String observaciones, double pesoActual) {
-        this.fechaConsulta = fechaConsulta;
-        this.diagnostico = diagnostico;
-        this.tratamiento = tratamiento;
-        this.observaciones = observaciones;
-        this.pesoActual = pesoActual;
-    }
-
-    // Getters
-    public String getFechaConsulta() { return fechaConsulta; }
-    public String getDiagnostico() { return diagnostico; }
-    public String getTratamiento() { return tratamiento; }
-    public String getObservaciones() { return observaciones; }
-    public double getPesoActual() { return pesoActual; }
 }

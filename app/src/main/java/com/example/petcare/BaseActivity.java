@@ -89,6 +89,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 finish();
             }
         } else if (id == R.id.navMenuHistorial) {
+            if (!getClass().equals(HistorialMedicoCompleto.class)) {
+                startActivity(new Intent(this, HistorialMedicoCompleto.class));
+                finish();
+            }
 
         } else if (id == R.id.navMenuEscanearCodigo) {
             if (!getClass().equals(EscanearCodigo.class)) {

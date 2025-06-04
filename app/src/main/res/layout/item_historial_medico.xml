@@ -1,34 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Fecha de consulta -->
         <TextView
             android:id="@+id/textViewFechaConsulta"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:fontFamily="@font/nunito_black"
+            android:text="01/01/2023"
+            android:textColor="@color/colorPrincipal"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Motivo de consulta -->
         <TextView
-            android:id="@+id/textViewDiagnostico"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/textViewPesoActual"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewMotivoConsulta"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textStyle="italic"/>
-    </LinearLayout>
+            android:fontFamily="@font/nunito_bold"
+            android:text="Motivo de consulta"
+            android:textColor="@color/negro"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFechaConsulta" />
+
+        <!-- Diagnóstico -->
+        <TextView
+            android:id="@+id/textViewDiagnostico"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_regular"
+            android:text="Diagnóstico completo aquí..."
+            android:textColor="@color/negro"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewMotivoConsulta" />
+
+        <!-- Botón para ver detalles completos -->
+
+        <!-- Tratamiento (solo visible si existe) -->
+        <TextView
+            android:id="@+id/textViewTratamiento"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_regular"
+            android:text="Tratamiento indicado..."
+            android:textColor="@color/negro"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDiagnostico" />
+
+        <!-- Detalles adicionales (peso, temperatura) -->
+        <LinearLayout
+            android:id="@+id/layoutDetalles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTratamiento">
+
+            <TextView
+                android:id="@+id/textViewPeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:drawableLeft="@drawable/icon_peso"
+                android:drawablePadding="4dp"
+                android:drawableTint="@color/colorPrincipal"
+                android:fontFamily="@font/nunito_bold"
+                android:text="5.2 kg"
+                android:textColor="@color/negro"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/textViewTemperatura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_temperatura"
+                android:drawablePadding="4dp"
+                android:drawableTint="@color/colorPrincipal"
+                android:fontFamily="@font/nunito_bold"
+                android:text="38.5°C"
+                android:textColor="@color/negro"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonVerDetalles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrincipal"
+            android:fontFamily="@font/nunito_semi_bold"
+            android:text="Ver Detalles"
+            android:textColor="@color/blanco"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutDetalles" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

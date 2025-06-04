@@ -30,6 +30,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".DetalleHistorialCompleto"
+            android:exported="false" />
+        <activity
+            android:name=".HistorialMedicoTodasLasMascotas"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleHistorial"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarHistorialMedico"
+            android:exported="false" />
+        <activity
             android:name=".EditarMedicamentos"
             android:exported="false" />
         <activity

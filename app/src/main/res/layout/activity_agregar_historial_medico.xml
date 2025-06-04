@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".AgregarHistorialMedico">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <!-- Header Image -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/margen_superior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Titulo -->
+        <TextView
+            android:id="@+id/textViewTitulo"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/subrayado"
+            android:fontFamily="@font/nunito_black"
+            android:gravity="center"
+            android:text="Nuevo Historial"
+            android:textColor="@color/blanco"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerImage" />
+
+        <!-- Contenedor del formulario -->
+        <LinearLayout
+            android:id="@+id/formContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTitulo">
+
+            <!-- Fecha de la consulta -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Fecha de la consulta"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_menu_citas"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextFechaConsulta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Motivo de la consulta -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Motivo de la consulta"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_informacion_mascota"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextMotivoConsulta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Diagnóstico -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Diagnóstico"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_informacion_mascota"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextDiagnostico"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Tratamiento -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Tratamiento"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_esterilizado"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextTratamiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Observaciones -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Observaciones"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_informacion_mascota"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextObservaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Peso actual -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Peso actual (kg) - Opcional"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_peso"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextPesoActual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Temperatura -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Temperatura (°C) - Opcional"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_temperatura"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextTemperatura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Vacunas aplicadas -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Vacunas aplicadas - Opcional"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:startIconDrawable="@drawable/icon_vacuna"
+                app:boxStrokeColor="@color/colorPrincipal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextVacunas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro"
+                    android:fontFamily="@font/nunito_bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Button de guardar -->
+            <Button
+                android:id="@+id/buttonGuardarHistorial"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/colorFondo"
+                android:text="Guardar Historial"
+                android:textColor="@color/negro"
+                android:textSize="18sp"
+                app:cornerRadius="15dp"
+                android:fontFamily="@font/nunito_semi_bold"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
