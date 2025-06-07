@@ -13,5 +13,5 @@
         <item>grave</item>
     </string-array>
 
-    <string name="url_servidor">http://192.168.0.192:8080</string>
+    <string name="url_servidor">http://192.168.212.137:8080</string>
 </resources>

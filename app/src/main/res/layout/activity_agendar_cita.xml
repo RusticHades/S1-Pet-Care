@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/colorFondo">
+
+    <TextView
+        android:id="@+id/titleCitas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Citas de la mascota"
+        android:textColor="@color/colorSpam"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/nunito_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCitas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAgregarCita"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleCitas" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAgregarCita"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Agendar Nueva Cita"
+        android:textAllCaps="false"
+        android:textColor="@color/blanco"
+        android:fontFamily="@font/nunito_bold"
+        app:backgroundTint="@color/colorPrincipal"
+        app:cornerRadius="12dp"
+        app:iconTint="@color/blanco"
+        app:layout_constraintBottom_toTopOf="@+id/btnGuardarCambios"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGuardarCambios"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Guardar Cambios"
+        android:textAllCaps="false"
+        android:textColor="@color/blanco"
+        android:fontFamily="@font/nunito_bold"
+        app:backgroundTint="@color/colorSecundario"
+        app:cornerRadius="12dp"
+        app:iconTint="@color/blanco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

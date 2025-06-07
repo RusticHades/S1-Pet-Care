@@ -190,6 +190,14 @@ public class VistaVeterinarioEnMascotas extends AppCompatActivity {
             intent.putExtra("id_mascota", idMascota);
             startActivity(intent);
         });
+
+        findViewById(R.id.cardViewAgendarCita).setOnClickListener(v -> {
+            Intent intent = new Intent(this, AgendarCita.class);
+            intent.putExtra("id_mascota", idMascota);
+            intent.putExtra("id_veterinario", idUsuario); // El veterinario que está logueado
+            startActivity(intent);
+        });
+
     }
 
     private void cargarDatosMascota() {
