@@ -40,6 +40,7 @@ public class EscanearCodigo extends BaseActivity {
     private ImageView imageViewQR;
     private String mascotaIdEscaneada = null;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,22 +182,44 @@ public class EscanearCodigo extends BaseActivity {
             // Obtener el ID del usuario actual desde SharedPreferences
             SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
             String idUsuario = prefs.getString("usuario_id", "0"); // "0" si no existe
+            String tipoUsuario = prefs.getString("usuario_tipo", "usuario");
 
-            // Verificar que ambos IDs sean válidos
-            if (!mascotaIdEscaneada.isEmpty() && !idUsuario.equals("0")) {
-                Intent intent = new Intent(this, VistaVeterinarioEnMascotas.class);
-                intent.putExtra("id_mascota", mascotaIdEscaneada);
-                intent.putExtra("id_usuario", idUsuario);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Error: No se pudo obtener la información necesaria", Toast.LENGTH_SHORT).show();
+            if (tipoUsuario != null) {
+                switch (tipoUsuario) {
+                    case "admin":
+                            // Verificar que ambos IDs sean válidos
+                            if (!mascotaIdEscaneada.isEmpty() && !idUsuario.equals("0")) {
+                                Intent intent = new Intent(this, VistaVeterinarioEnMascotas.class);
+                                intent.putExtra("id_mascota", mascotaIdEscaneada);
+                                intent.putExtra("id_usuario", idUsuario);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(this, "Error: No se pudo obtener la información necesaria", Toast.LENGTH_SHORT).show();
+                            }
+                        break;
+                    case "veterinario":
+                            if (!mascotaIdEscaneada.isEmpty() && !idUsuario.equals("0")) {
+                                Intent intent = new Intent(this, VistaVeterinarioEnMascotas.class);
+                                intent.putExtra("id_mascota", mascotaIdEscaneada);
+                                intent.putExtra("id_usuario", idUsuario);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(this, "Error: No se pudo obtener la información necesaria", Toast.LENGTH_SHORT).show();
+                            }
+                        break;
+                    case "usuario":
+                            if (!mascotaIdEscaneada.isEmpty() && !idUsuario.equals("0")) {
+                                Intent intent = new Intent(this, InformacionDeMascota.class);
+                                intent.putExtra("id_mascota", mascotaIdEscaneada);
+                                intent.putExtra("tipo_usuario", "visualizar");
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(this, "Error: No se pudo obtener la información necesaria", Toast.LENGTH_SHORT).show();
+                            }
+                        break;
+                }
             }
         }
-    }
-
-    private int obtenerIdUsuario() {
-        SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
-        return prefs.getInt("usuario_id", 0); // 0 si no existe
     }
 
     private Bitmap generarQRCode(String content, int size) {

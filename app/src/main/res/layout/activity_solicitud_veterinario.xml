@@ -4,90 +4,169 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".SolicitudVeterinarioActivity">
+    android:fillViewport="true"
+    tools:context=".SolicitudVeterinario">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_height="wrap_content">
 
+        <!-- Header Image -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/margen_superior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/imageViewFotoPerfil"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="0dp"
+            android:contentDescription="Icono de la app PetCare"
+            android:src="@drawable/logo_veterinaria"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerImage" />
+
+        <!-- Title -->
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:text="Solicitud para ser Veterinario"
-            android:textAlignment="center"
+            android:textColor="@color/negro"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/nunito_black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewFotoPerfil" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+        <!-- Form Container -->
+        <LinearLayout
+            android:id="@+id/formContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="Especialidad"
-            app:boxCornerRadiusBottomEnd="25dp"
-            app:boxCornerRadiusTopStart="25dp"
-            app:startIconDrawable="@drawable/icon_informacion_mascota">
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleText">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEspecialidad"
+            <!-- Especialidad Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="16dp"
+                android:hint="Especialidad"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_informacion_mascota">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="Ubicación"
-            app:boxCornerRadiusBottomEnd="25dp"
-            app:boxCornerRadiusTopStart="25dp"
-            app:startIconDrawable="@drawable/icon_ubicacion">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEspecialidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="text"
+                    android:textColor="@color/negro" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etUbicacion"
+            <!-- Ubicación Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="16dp"
+                android:hint="Ubicación"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_ubicacion">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Teléfono"
-            app:boxCornerRadiusBottomEnd="25dp"
-            app:boxCornerRadiusTopStart="25dp"
-            app:startIconDrawable="@drawable/icon_telefono">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUbicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="text"
+                    android:textColor="@color/negro" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTelefono"
+            <!-- Teléfono Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="16dp"
+                android:hint="Teléfono"
+                app:boxCornerRadiusBottomEnd="25dp"
+                app:boxCornerRadiusTopStart="25dp"
+                app:boxStrokeColor="@color/colorPrincipal"
+                app:startIconDrawable="@drawable/icon_telefono">
 
-        <Button
-            android:id="@+id/btnSeleccionarCertificado"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Seleccionar Certificado"
-            android:textAllCaps="false"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nunito_bold"
+                    android:inputType="phone"
+                    android:textColor="@color/negro" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnEnviarSolicitud"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enviar Solicitud"
-            android:textAllCaps="false"
-            style="@style/Widget.MaterialComponents.Button" />
-    </LinearLayout>
+            <!-- Botón Seleccionar Certificado -->
+            <Button
+                android:id="@+id/btnSeleccionarCertificado"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/blanco"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:text="Seleccionar Certificado"
+                android:textAllCaps="false"
+                android:textColor="@color/colorSpam"
+                android:textSize="16sp"
+                app:cornerRadius="15dp" />
+
+            <!-- Botón Enviar Solicitud -->
+            <Button
+                android:id="@+id/btnEnviarSolicitud"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="75dp"
+                android:backgroundTint="@color/colorSpam"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:text="Enviar Solicitud"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="16sp"
+                app:cornerRadius="15dp" />
+        </LinearLayout>
+
+        <!-- Footer Image -->
+        <ImageView
+            android:id="@+id/footerImage"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:scaleX="-1"
+            android:scaleY="-1"
+            android:src="@drawable/margen_superior"
+            android:layout_marginTop="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

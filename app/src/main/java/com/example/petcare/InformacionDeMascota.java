@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +81,7 @@ public class InformacionDeMascota extends AppCompatActivity {
     private Button btnGenerarFicha;
 
     private String mascotaNombre, mascotaEspecie, mascotaRaza, mascotaEdad, mascotaSexo;
-    private String mascotaPeso, mascotaEsterilizado, mascotaNacimiento, mascotaId;
+    private String mascotaPeso, mascotaEsterilizado, mascotaNacimiento, mascotaId, tipoUsuario;
     private Bitmap mascotaBitmap;
 
     @Override
@@ -94,12 +95,21 @@ public class InformacionDeMascota extends AppCompatActivity {
         btnGenerarFicha.setOnClickListener(v -> generarFichaMascota());
 
         mascotaId = getIntent().getStringExtra("id_mascota");
+        tipoUsuario = getIntent().getStringExtra("tipo_usuario");
+
+        if(tipoUsuario.equals("visualizar")){
+            LinearLayout linearLayout = findViewById(R.id.linearLayoutCodigoId);
+            linearLayout.setVisibility(View.GONE);
+        }
+
         if (mascotaId != null && !mascotaId.isEmpty()) {
             new ObtenerInfoMascotaTask().execute(mascotaId);
         } else {
             Toast.makeText(this, "Error: ID de mascota no válido", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+
     }
 
     private void initViews() {

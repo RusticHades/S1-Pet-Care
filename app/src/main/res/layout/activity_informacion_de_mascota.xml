@@ -150,40 +150,41 @@
             app:cardElevation="8dp">
 
             <LinearLayout
+                android:id="@+id/linearLayoutCodigoId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/nunito_bold"
                     android:text="Código QR de Identificación"
                     android:textColor="@color/colorPrincipal"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="16dp"/>
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:id="@+id/imageViewQR"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:src="@drawable/imagen_qr_generico"/>
+                    android:src="@drawable/imagen_qr_generico" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/btnGenerarFicha"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="Generar Ficha"
-                        android:layout_marginEnd="8dp"/>
+                        android:text="Generar Ficha" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

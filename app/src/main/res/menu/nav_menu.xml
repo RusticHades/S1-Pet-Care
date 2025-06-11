@@ -23,6 +23,20 @@
             android:iconTint="@color/blanco"/>
 
         <item
+            android:id="@+id/navMenuSolicitarVeterinario"
+            android:icon="@drawable/icon_veterinario"
+            android:title="Ser Veterinario"
+            android:iconTint="@color/blanco" />
+
+        <item
+            android:id="@+id/navMenuAdminPanel"
+            android:icon="@drawable/icon_panel_administrador"
+            android:title="Panel Admin"
+            android:iconTint="@color/blanco"
+            android:visible="false"
+            />
+
+        <item
             android:id="@+id/navMenuCerrarSesion"
             android:icon="@drawable/icon_cerrar_sesion"
             android:title="Cerrar Sesion"

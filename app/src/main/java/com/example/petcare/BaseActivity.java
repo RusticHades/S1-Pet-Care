@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -48,16 +50,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         // Inicializar vistas
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        actualizarHeaderNavigationView(); //Metodo para colocar el nombre y foto de perfil del usuario xd
+        actualizarHeaderNavigationView();
         navigationView.setNavigationItemSelectedListener(this);
 
         headerView = navigationView.getHeaderView(0);
         LinearLayout headerLayout = headerView.findViewById(R.id.headerLayout);
 
         headerLayout.setOnClickListener(v -> {
-            abrirActivityInformacionDeUsuario(); //Metodo para abrir la activity de informacion del usuario usando el nav header
+            abrirActivityInformacionDeUsuario();
         });
 
+        // Configurar visibilidad de items del menú según tipo de usuario
+        configurarMenuSegunTipoUsuario();
 
         // Configuracion del ImageButton para abrir el menu
         btnMenuHamburguesa = findViewById(R.id.buttonMenuHamburguesa);
@@ -70,10 +74,38 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         });
     }
 
+    private void configurarMenuSegunTipoUsuario() {
+        Menu menu = navigationView.getMenu();
+        String userType = getTipoUsuario(); // Obtener tipo de usuario de SharedPreferences
+
+        MenuItem adminItem = menu.findItem(R.id.navMenuAdminPanel);
+        MenuItem vetRequestItem = menu.findItem(R.id.navMenuSolicitarVeterinario);
+
+        adminItem.setVisible(false);
+
+        if (userType != null) {
+            switch (userType) {
+                case "admin":
+                    adminItem.setVisible(true);
+                    vetRequestItem.setVisible(false);
+                    break;
+                case "veterinario":
+                    vetRequestItem.setVisible(false);
+                    break;
+            }
+        }
+    }
+
+    private String getTipoUsuario() {
+        SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+        return prefs.getString("usuario_tipo", "usuario");
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         actualizarHeaderNavigationView();
+        configurarMenuSegunTipoUsuario(); // Actualizar menú por si cambió el tipo de usuario
     }
 
     @Override
@@ -83,7 +115,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         int id = item.getItemId();
 
         if (id == R.id.navMenuInicio) {
-            //If para asegurarse que no se abren multiples activitys iguales
             if (!(this instanceof Inicio)) {
                 startActivity(new Intent(this, Inicio.class));
                 finish();
@@ -94,22 +125,46 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 finish();
             }
         } else if (id == R.id.navMenuCerrarSesion) {
-            // Limpiar SharedPreferences
-            SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear(); // Esto borra todos los datos
-            editor.apply();
-
-            // Redirigir a la Activity de login (o la que quieras)
-            Intent intent = new Intent(this, InicioDeSesion.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish(); // Cierra la Activity actual
+            cerrarSesion();
+        } else if (id == R.id.navMenuSolicitarVeterinario) {
+            mostrarDialogoSolicitudVeterinario();
+            return true;
+        } else if (id == R.id.navMenuAdminPanel) {
+            if (!getClass().equals(AdminVeterinarios.class)) {
+                startActivity(new Intent(this, AdminVeterinarios.class));
+                finish();
+            }
+            return true;
         }
         return true;
     }
 
-    //Metodo para abrir la activyti de informacion del usuario
+    private void cerrarSesion() {
+        SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        Intent intent = new Intent(this, InicioDeSesion.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void mostrarDialogoSolicitudVeterinario() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Solicitar ser Veterinario");
+        builder.setMessage("¿Deseas enviar una solicitud para convertirte en veterinario?");
+
+        builder.setPositiveButton("Sí", (dialog, which) -> {
+            // Llevar a la activity de solicitud de veterinario
+            startActivity(new Intent(this, SolicitudVeterinario.class));
+        });
+
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
     protected void abrirActivityInformacionDeUsuario() {
         startActivity(new Intent(this, InformacionDeUsuario.class));
         finish();
@@ -123,6 +178,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             super.onBackPressed();
         }
     }
+
     public void actualizarHeaderNavigationView() {
         runOnUiThread(() -> {
             if (navigationView != null) {
@@ -132,15 +188,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
                 SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
 
-                // Obtener datos actualizados del usuario
                 String nombre = prefs.getString("usuario_nombre", "Nombre de Usuario");
-                String fotoUrl = prefs.getString("usuario_foto_url", null); // Cambiado a foto_url
+                String fotoUrl = prefs.getString("usuario_foto_url", null);
 
-
-                // Actualizar nombre
                 textViewUserName.setText(nombre);
 
-                // Actualizar foto de perfil
                 if (fotoUrl != null && !fotoUrl.isEmpty()) {
                     new CargarImagenHeaderTask(imageViewProfile).execute(fotoUrl);
                 } else {
@@ -151,7 +203,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         });
     }
 
-    // AsyncTask para cargar la imagen del header
     private class CargarImagenHeaderTask extends AsyncTask<String, Void, Bitmap> {
         private final ImageView imageView;
 
