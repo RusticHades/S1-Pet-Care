@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorFondo"
+    tools:context=".AdminVeterinarios">
+
+    <!-- Header Image con sombra -->
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/margen_superior"
+        android:elevation="4dp" />
+
+    <!-- Titulo con mejor espaciado -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/nunito_black"
+        android:gravity="center"
+        android:text="Solicitudes de Veterinarios"
+        android:textColor="@color/blanco"
+        android:textSize="24sp"
+        android:letterSpacing="0.03"
+        android:background="@drawable/subrayado"/>
+
+    <!-- Subtítulo con estilo más refinado -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="@font/nunito_bold"
+        android:gravity="center"
+        android:text="Panel del administrador"
+        android:textColor="@color/blanco"
+        android:textSize="18sp"
+        android:letterSpacing="0.02"/>
+
+    <!-- CardView con mejor sombra y márgenes -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <ListView
+            android:id="@+id/lvSolicitudes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="12dp"
+            android:padding="12dp"
+            android:clipToPadding="false"
+            android:scrollbars="none"/>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Footer con mejor espaciado -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="@font/nunito_regular"
+        android:gravity="center"
+        android:text="© PetCare"
+        android:textColor="@color/blanco"
+        android:textSize="14sp"
+        android:letterSpacing="0.05"/>
+</LinearLayout>

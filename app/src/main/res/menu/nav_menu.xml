@@ -17,21 +17,15 @@
             android:iconTint="@color/blanco"/>
 
         <item
-            android:id="@+id/navMenuCitas"
-            android:icon="@drawable/icon_menu_citas"
-            android:title="Citas"
-            android:iconTint="@color/blanco"/>
-
-        <item
-            android:id="@+id/navMenuHistorial"
-            android:icon="@drawable/icon_menu_historial"
-            android:title="Historial Medico"
-            android:iconTint="@color/blanco" />
-
-        <item
             android:id="@+id/navMenuEscanearCodigo"
             android:icon="@drawable/icon_escanear_codigo"
             android:title="Escanear Codigo"
+            android:iconTint="@color/blanco"/>
+
+        <item
+            android:id="@+id/navMenuCerrarSesion"
+            android:icon="@drawable/icon_cerrar_sesion"
+            android:title="Cerrar Sesion"
             android:iconTint="@color/blanco"/>
     </group>
 </menu>

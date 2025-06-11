@@ -65,7 +65,7 @@
 
         <!-- Primera fila -->
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardAgendarCita"
+            android:id="@+id/cardCita"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginEnd="8dp"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="Agendar Cita"
+                    android:text="Citas"
                     android:textColor="@color/negro"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -111,7 +111,7 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardAgendarCita"
+            app:layout_constraintStart_toEndOf="@+id/cardCita"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
@@ -152,7 +152,7 @@
             app:cardElevation="4dp"
             app:layout_constraintEnd_toStartOf="@+id/cardQR"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardAgendarCita">
+            app:layout_constraintTop_toBottomOf="@+id/cardCita">
 
             <LinearLayout
                 android:layout_width="match_parent"

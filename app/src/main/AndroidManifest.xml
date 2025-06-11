@@ -27,8 +27,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PetCare"
-        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".DetalleSolicitud"
+            android:exported="false" />
+        <activity
+            android:name=".AdminVeterinarios"
+            android:exported="false" />
+        <activity
+            android:name=".SolicitudVeterinario"
+            android:exported="false" />
+        <activity
+            android:name=".MostrarHistorialMedico"
+            android:exported="false" />
         <activity
             android:name=".AgendarCita"
             android:exported="false" />

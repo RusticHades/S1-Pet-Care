@@ -15,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -31,14 +31,13 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class AgendarCita extends AppCompatActivity {
-    private String idMascota;
+    private String idMascota, idVeterinario, inicioVeterinario;
     private RecyclerView recyclerView;
     private CitasAdapter adapter;
     private List<Citas> citasList = new ArrayList<>();
@@ -50,15 +49,40 @@ public class AgendarCita extends AppCompatActivity {
         setContentView(R.layout.activity_agendar_cita);
 
         idMascota = getIntent().getStringExtra("id_mascota");
+        idVeterinario = getIntent().getStringExtra("id_veterinario");
+        inicioVeterinario = getIntent().getStringExtra("inicio_o_veterinario");
+        if (inicioVeterinario == null || inicioVeterinario.isEmpty()) {
+            inicioVeterinario = "veterinario"; // Valor por defecto
+        }
+
         if (idMascota == null || idMascota.isEmpty()) {
             Toast.makeText(this, "Error: ID de mascota no válido", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        if (inicioVeterinario.equals("inicio")) {
+            MaterialButton btnAgregarCitaInicio = findViewById(R.id.btnAgregarCita);
+            btnAgregarCitaInicio.setVisibility(View.GONE);
+            btnAgregarCitaInicio.setEnabled(false);
+
+            MaterialButton btnGuardarCambiosInicio = findViewById(R.id.btnGuardarCambios);
+            btnGuardarCambiosInicio.setVisibility(View.GONE);
+            btnGuardarCambiosInicio.setEnabled(false);
+        }
+
         recyclerView = findViewById(R.id.recyclerViewCitas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CitasAdapter(citasList, this::eliminarCita);
+        adapter = new CitasAdapter(citasList, new CitasAdapter.OnCitaClickListener() {
+            @Override
+            public void onCitaClick(int position) {
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                eliminarCita(position);
+            }
+        }, inicioVeterinario);
         recyclerView.setAdapter(adapter);
 
         findViewById(R.id.btnAgregarCita).setOnClickListener(v -> mostrarDialogoAgregarCita());
@@ -132,7 +156,7 @@ public class AgendarCita extends AppCompatActivity {
 
         tvIdMascota.setText(idMascota);
         // Aquí deberías obtener el id_veterinario de alguna manera (quizás del Intent o SharedPreferences)
-        tvIdVeterinario.setText("1"); // Ejemplo, reemplazar con el valor real
+        tvIdVeterinario.setText(idVeterinario); // Ejemplo, reemplazar con el valor real
 
         // Configurar el calendario y formateador de fecha y hora
         final Calendar calendar = Calendar.getInstance();
@@ -178,39 +202,38 @@ public class AgendarCita extends AppCompatActivity {
 
     private void agregarCita(String fechaHora, String motivo, String notas) {
         String url = getString(R.string.url_servidor) + "/miapp/agregar_cita.php";
-        Log.d("API_CALL", "URL: " + url);
 
-        // Obtén el ID del veterinario (debes tenerlo disponible)
+        // Convertir parámetros a JSON
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("id_mascota", idMascota);
+            jsonBody.put("id_veterinario", idVeterinario); // Reemplaza con valor real
+            jsonBody.put("fecha_cita", fechaHora);
+            jsonBody.put("motivo", motivo);
+            jsonBody.put("notas", notas);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        Map<String, String> params = new HashMap<>();
-        params.put("id_mascota", idMascota);
-        params.put("id_veterinario", "1");
-        params.put("fecha_hora", fechaHora); // Envía el formato directamente como lo recoges
-        params.put("motivo", motivo);
-        params.put("notas", notas);
-
-        Log.d("REQUEST_PARAMS", params.toString());
-
-        StringRequest request = new StringRequest(
+        JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
+                jsonBody,
                 response -> {
-                    Log.d("API_RESPONSE", "Respuesta: " + response);
                     try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        if (jsonResponse.getBoolean("success")) {
-                            Toast.makeText(this, "Cita agendada correctamente", Toast.LENGTH_SHORT).show();
+                        if (response.getBoolean("success")) {
+                            Toast.makeText(this, "Cita agendada", Toast.LENGTH_SHORT).show();
                             cargarCitas();
                         } else {
-                            String error = jsonResponse.optString("message", "Error al agendar cita");
+                            String error = response.getString("message");
                             Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Log.e("JSON_ERROR", "Error: " + e.getMessage());
-                        Toast.makeText(this, "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error al procesar respuesta", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
+                    // Mostrar el error real del servidor
                     String errorMsg = "Error de conexión";
                     if (error.networkResponse != null && error.networkResponse.data != null) {
                         try {
@@ -218,44 +241,19 @@ public class AgendarCita extends AppCompatActivity {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                    } else if (error.getMessage() != null) {
-                        errorMsg = error.getMessage();
                     }
-                    Log.e("NETWORK_ERROR", "Error: " + errorMsg);
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
                 }
         ) {
             @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-
-            @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
         };
 
-        request.setRetryPolicy(new DefaultRetryPolicy(
-                10000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         requestQueue.add(request);
-    }
-
-    private String convertirFormatoFecha(String fechaOriginal) {
-        try {
-            SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
-            SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-            Date date = originalFormat.parse(fechaOriginal);
-            return targetFormat.format(date);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void eliminarCita(int position) {

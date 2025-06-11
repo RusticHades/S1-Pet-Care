@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFondo"
+    android:fillViewport="true"
+    tools:context=".DetalleSolicitud">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Tarjeta de información del veterinario -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Nombre -->
+                <TextView
+                    android:id="@+id/tvNombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/nunito_black"
+                    android:textColor="@color/colorPrincipal"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <!-- Separador -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/colorSecundario" />
+
+                <!-- Información detallada -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="8dp">
+
+                    <TextView
+                        android:id="@+id/tvEspecialidad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:drawableLeft="@drawable/icon_informacion_mascota"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvUbicacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:drawableLeft="@drawable/icon_ubicacion"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvTelefono"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:drawableLeft="@drawable/icon_telefono"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvCorreo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:drawableLeft="@drawable/icon_email"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/nunito_regular"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Botón Ver Certificado -->
+                <Button
+                    android:id="@+id/btnVerCertificado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/colorPrincipal"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Ver Certificado"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blanco" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Tarjeta de acciones -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btnAprobar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/colorPrincipal"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="Aprobar"
+                        android:textAllCaps="false"
+                        android:textColor="@color/blanco" />
+
+                    <Button
+                        android:id="@+id/btnRechazar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/rojo"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="Rechazar"
+                        android:textAllCaps="false"
+                        android:textColor="@color/blanco" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

@@ -88,15 +88,23 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 startActivity(new Intent(this, Inicio.class));
                 finish();
             }
-        } else if (id == R.id.navMenuHistorial) {
-
         } else if (id == R.id.navMenuEscanearCodigo) {
             if (!getClass().equals(EscanearCodigo.class)) {
                 startActivity(new Intent(this, EscanearCodigo.class));
                 finish();
             }
-        } else if (id == R.id.navMenuCitas) {
+        } else if (id == R.id.navMenuCerrarSesion) {
+            // Limpiar SharedPreferences
+            SharedPreferences prefs = getSharedPreferences("miapp_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear(); // Esto borra todos los datos
+            editor.apply();
 
+            // Redirigir a la Activity de login (o la que quieras)
+            Intent intent = new Intent(this, InicioDeSesion.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish(); // Cierra la Activity actual
         }
         return true;
     }
