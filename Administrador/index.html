@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes de Veterinarios - PetCare</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Solicitudes de Veterinarios</h1>
+        <p class="admin-panel-text">Panel del administrador</p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-nombre">Nombre</th>
+                        <th class="col-especialidad">Especialidad</th>
+                        <th class="col-certificado">Certificado</th>
+                        <th class="col-ubicacion">Ubicación</th>
+                        <th class="col-telefono">Teléfono</th>
+                        <th class="col-gmail">Gmail</th>
+                        <th class="col-acciones">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="vet-juanperez">
+                        <td>Dr. Juan Pérez</td>
+                        <td>Cardiología</td>
+                        <td><a href="view_certificate.html?cert=certificate_juanperez.pdf" target="_blank" class="view-certificate">Ver Certificado</a></td>
+                        <td>Calle Falsa 123, Bogotá</td>
+                        <td>3001234567</td>
+                        <td>juanperez@gmail.com</td>
+                        <td class="actions">
+                            <button class="btn approve-btn" data-vet-name="Dr. Juan Pérez" data-row-id="vet-juanperez">Aprobar</button>
+                            <button class="btn reject-btn" data-row-id="vet-juanperez">Rechazar</button>
+                        </td>
+                    </tr>
+                    <tr id="vet-anagarcia">
+                        <td>Dra. Ana García</td>
+                        <td>Dermatología</td>
+                        <td><a href="view_certificate.html?cert=certificate_anagarcia.pdf" target="_blank" class="view-certificate">Ver Certificado</a></td>
+                        <td>Avenida Central 456, Medellín</td>
+                        <td>3019876543</td>
+                        <td>anagarcia@gmail.com</td>
+                        <td class="actions">
+                            <button class="btn approve-btn" data-vet-name="Dra. Ana García" data-row-id="vet-anagarcia">Aprobar</button>
+                            <button class="btn reject-btn" data-row-id="vet-anagarcia">Rechazar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="footer-text">&copy; PetCare</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rejectButtons = document.querySelectorAll('.reject-btn');
+            const approveButtons = document.querySelectorAll('.approve-btn');
+
+            // Functionality for Reject button
+            rejectButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const rowId = this.dataset.rowId;
+                    const rowToRemove = document.getElementById(rowId);
+
+                    if (rowToRemove) {
+                        if (confirm('¿Estás seguro de que quieres rechazar esta solicitud y eliminarla?')) {
+                            rowToRemove.remove();
+                            console.log(`Solicitud con ID ${rowId} rechazada y eliminada.`);
+                        }
+                    }
+                });
+            });
+
+            // Functionality for Approve button
+            approveButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const vetName = this.dataset.vetName;
+                    const rowId = this.dataset.rowId;
+                    const rowToRemove = document.getElementById(rowId);
+
+                    if (rowToRemove) {
+                        if (confirm(`¿Estás seguro de que quieres aprobar la solicitud de ${vetName}?, se eliminara despues de ser aprobada`)) {
+                            rowToRemove.remove();
+                            alert(`Solicitud aprobada para ${vetName}.`);
+                            console.log(`Solicitud con ID ${rowId} aprobada y eliminada.`);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

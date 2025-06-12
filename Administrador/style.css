@@ -1,0 +1,160 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f8f0; /* Light green-white background */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container for the whole page content */
+.container {
+    max-width: 1000px; /* Slightly wider to accommodate new column */
+    margin: 40px auto;
+    background-color: #ffffff; /* White background for the content area */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Page Title */
+h1 {
+    color: #28a745; /* Modern green */
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: bold;
+}
+
+/* Admin Panel Text */
+.admin-panel-text {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 25px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto; /* Allows horizontal scrolling for smaller screens if table overflows */
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed; /* Crucial for fixed column widths */
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Light grey bottom border */
+    vertical-align: middle; /* Align content vertically in the middle */
+    word-wrap: break-word; /* Prevents long words from breaking layout */
+}
+
+/* Specific column widths for better alignment */
+.col-nombre { width: 15%; }
+.col-especialidad { width: 12%; }
+.col-certificado { width: 10%; }
+.col-ubicacion { width: 18%; }
+.col-telefono { width: 12%; }
+.col-gmail { width: 18%; }
+.col-acciones { width: 15%; } /* Ensure enough space for buttons */
+
+
+th {
+    background-color: #28a745; /* Green header background */
+    color: #ffffff; /* White text for headers */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em; /* Slightly smaller font for headers to fit */
+    letter-spacing: 0.5px;
+}
+
+/* Specific styling for the first and last header cells for rounded corners */
+th:first-child {
+    border-top-left-radius: 8px;
+}
+
+th:last-child {
+    border-top-right-radius: 8px;
+}
+
+/* Style for alternating rows */
+tbody tr:nth-child(even) {
+    background-color: #f9fff9; /* Very light green for even rows */
+}
+
+tbody tr:hover {
+    background-color: #e6ffe6; /* Lighter green on hover */
+    transition: background-color 0.3s ease;
+}
+
+/* "Ver Certificado" Link Styles */
+.view-certificate {
+    color: #1a73e8; /* A standard blue for links */
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Helps with padding/margin if needed */
+}
+
+.view-certificate:hover {
+    text-decoration: underline;
+    color: #145cb3; /* Slightly darker blue on hover */
+}
+
+/* Action Buttons */
+.actions {
+    /* white-space: nowrap; Removed this to allow buttons to wrap if necessary, controlled by column width */
+    display: flex; /* Use flexbox to align buttons */
+    gap: 8px; /* Space between buttons */
+    justify-content: flex-start; /* Align buttons to the start of the cell */
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line if space is tight */
+}
+
+.btn {
+    padding: 8px 12px; /* Slightly adjusted padding for buttons */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em; /* Slightly smaller font for buttons */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    /* margin-right: 8px; Replaced by gap in flexbox */
+}
+
+.approve-btn {
+    background-color: #28a745; /* Green for approve */
+    color: #ffffff;
+}
+
+.approve-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-2px);
+}
+
+.reject-btn {
+    background-color: #dc3545; /* Red for reject */
+    color: #ffffff;
+}
+
+.reject-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+    transform: translateY(-2px);
+}
+
+/* Footer Text */
+.footer-text {
+    text-align: right;
+    margin-top: 30px;
+    color: #777;
+    font-size: 0.9em;
+}
